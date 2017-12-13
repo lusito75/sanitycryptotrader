@@ -1,0 +1,14 @@
+{
+  "name": "sanitybtctrader",
+  "version": "1.0.0",
+  "description": "interact with btcmarkets",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "P Lourenco",
+  "license": "ISC",
+  "dependencies": {
+    "btc-markets": "0.0.10"
+  }
+}
