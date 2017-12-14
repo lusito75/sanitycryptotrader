@@ -13,18 +13,18 @@ var numberConverter = 100000000;    // one hundred million
 //     console.log(data);
 // });
 
-// client.getAccountBalances(function(err, data)
-// {
-//     if (err){
-//         console.log(err);
-//     }
-//     else {
-//         data.forEach(function(account)
-//         {
-//             console.log(account.currency + ' balance ' + account.balance / numberConverter + ' pending ' + account.pendingFunds / numberConverter);
-//         });
-//     }
-// });
+client.getAccountBalances(function(err, data)
+{
+    if (err){
+        console.log(err);
+    }
+    else {
+        data.forEach(function(account)
+        {
+            console.log(account.currency + ' balance ' + account.balance / numberConverter + ' pending ' + account.pendingFunds / numberConverter);
+        });
+    }
+});
 
 // client.getTradingFee("BTC", "AUD", function(err, data)
 // {
@@ -42,4 +42,5 @@ function logPriceToFile(btcclient, crypto, currency) {
     });
 }
 
-setInterval(logPriceToFile.bind(null, client, "BTC", "AUD"), 5000);
+setInterval(logPriceToFile.bind(null, client, "BTC", "AUD"), 20000);
+setInterval(logPriceToFile.bind(null, client, "XRP", "AUD"), 20000);
