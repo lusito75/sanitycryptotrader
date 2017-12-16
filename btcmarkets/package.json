@@ -9,6 +9,7 @@
   "author": "P Lourenco",
   "license": "ISC",
   "dependencies": {
-    "btc-markets": "0.0.10"
+    "btc-markets": "0.0.10",
+    "mongoose": "^4.13.7"
   }
 }

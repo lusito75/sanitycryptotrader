@@ -1,17 +1,15 @@
-var secrets = require('./secrets.json');
-
-var BTCMarkets = require('btc-markets');
+var secrets    = require('./secrets.json'),
+    BTCMarkets = require('btc-markets'),
+    mongoose   = require('mongoose'),
+    Tick       = require('./models/ticks');
 
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
 var numberConverter = 100000000;    // one hundred million
 
-// get latest prices
-// client.getTick("BTC", "AUD", function(err, data)
-// {
-//     console.log('BTC / AUD bid ' + data.bestBid + ' ask ' + data.bestAsk + ' last price ' + data.lastPrice);
-//     console.log(data);
-// });
+var mongoUrl  = process.env.DATABASEURL || "mongodb://localhost/cryptotrader";
+mongoose.connect(mongoUrl);
+
 
 client.getAccountBalances(function(err, data)
 {
@@ -19,28 +17,29 @@ client.getAccountBalances(function(err, data)
         console.log(err);
     }
     else {
+        console.log('\n\n');
         data.forEach(function(account)
         {
             console.log(account.currency + ' balance ' + account.balance / numberConverter + ' pending ' + account.pendingFunds / numberConverter);
         });
+        console.log('\n\n\n');
     }
 });
 
-// client.getTradingFee("BTC", "AUD", function(err, data)
-// {
-//     if (!err) {
-//         console.log("BTC/AUD trading fee: " + data);
-//     }
-// });
 
-function logPriceToFile(btcclient, crypto, currency) {
+function capturePriceData(btcclient, crypto, currency) {
     btcclient.getTick(crypto, currency, function(err, data)
     {
         if(!err){
             console.log(data);
+            console.log('\n\n\n');
+            Tick.create(data, function(err, newData){
+                if (err) { console.log(err)}
+            });
         }
     });
 }
 
-setInterval(logPriceToFile.bind(null, client, "BTC", "AUD"), 20000);
-setInterval(logPriceToFile.bind(null, client, "XRP", "AUD"), 20000);
+setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 120000);
+setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 120000);
+setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 120000);
