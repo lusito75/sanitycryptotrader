@@ -40,6 +40,34 @@ function capturePriceData(btcclient, crypto, currency) {
     });
 }
 
+function analysePriceData(crypto) {
+    // retrieve latest calcs for crypto
+    // retrieve last (?) price ticks
+    var priceArray = [];
+    Tick.find({'instrument': crypto}, function (err, latestTicks){
+        if (err) {
+            console.log(err.message);
+        } else {
+            // push lastPrice to local array
+            latestTicks.forEach(function(price){
+                priceArray.push(price.lastPrice);
+            });
+            console.log('latest '+crypto+' prices: '+priceArray);
+        }
+    });
+
+    // do stuff
+    var min = Math.min.apply(null, priceArray ),
+        max = Math.max( ...priceArray );
+    console.log(min.toString());
+    console.log(crypto + ' latest MIN: ' + min + ' latest MAX: ' + max);
+
+
+
+}
+
 setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 120000);
 setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 120000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 120000);
+
+setInterval(analysePriceData.bind(null, "BTC"), 10000);
