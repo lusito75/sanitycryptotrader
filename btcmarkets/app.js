@@ -31,8 +31,8 @@ function capturePriceData(btcclient, crypto, currency) {
     btcclient.getTick(crypto, currency, function(err, data)
     {
         if(!err){
-            console.log(data);
-            console.log('\n\n\n');
+            // console.log(data);
+            // console.log('\n\n\n');
             Tick.create(data, function(err, newData){
                 if (err) { console.log(err)}
             });
@@ -43,8 +43,10 @@ function capturePriceData(btcclient, crypto, currency) {
 function analysePriceData(crypto) {
     // retrieve latest calcs for crypto
     // retrieve last (?) price ticks
-    var priceArray = [];
-    Tick.find({'instrument': crypto}, function (err, latestTicks){
+    var priceArray  = [];
+    var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(50);
+
+    queryPrices.exec(function (err, latestTicks){
         if (err) {
             console.log(err.message);
         } else {
@@ -52,15 +54,16 @@ function analysePriceData(crypto) {
             latestTicks.forEach(function(price){
                 priceArray.push(price.lastPrice);
             });
-            console.log('latest '+crypto+' prices: '+priceArray);
+            // console.log('latest '+crypto+' prices: '+priceArray);
+            
+            // do stuff
+            var min    = Math.min.apply(null, priceArray ),
+                max    = Math.max.apply(null, priceArray );
+                latest = priceArray[0];
+            console.log(crypto + ' sample MIN: ' + min + ' sample MAX: ' + max + ' latest: ' + latest);
+            console.log('\n');
         }
     });
-
-    // do stuff
-    var min = Math.min.apply(null, priceArray ),
-        max = Math.max( ...priceArray );
-    console.log(min.toString());
-    console.log(crypto + ' latest MIN: ' + min + ' latest MAX: ' + max);
 
 
 
@@ -71,3 +74,5 @@ setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 120000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 120000);
 
 setInterval(analysePriceData.bind(null, "BTC"), 10000);
+setInterval(analysePriceData.bind(null, "ETH"), 10000);
+setInterval(analysePriceData.bind(null, "LTC"), 10000);
