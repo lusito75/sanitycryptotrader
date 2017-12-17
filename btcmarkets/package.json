@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "btc-markets": "0.0.10",
-    "mongoose": "^4.13.7"
+    "mongoose": "^4.13.7",
+    "mongoose-timestamp": "^0.6.0"
   }
 }
