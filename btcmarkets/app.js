@@ -1,7 +1,8 @@
 var secrets    = require('./secrets.json'),
     BTCMarkets = require('btc-markets'),
     mongoose   = require('mongoose'),
-    Tick       = require('./models/ticks');
+    Tick       = require('./models/ticks'),
+    Calc       = require('./models/calcs')
 
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
@@ -41,7 +42,6 @@ function capturePriceData(btcclient, crypto, currency) {
 }
 
 function analysePriceData(crypto) {
-    // retrieve latest calcs for crypto
     // retrieve last (?) price ticks
     var priceArray  = [];
     var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(50);
@@ -62,6 +62,24 @@ function analysePriceData(crypto) {
                 latest = priceArray[0];
             console.log(crypto + ' sample MIN: ' + min + ' sample MAX: ' + max + ' latest: ' + latest);
             console.log('\n');
+
+            // retrieve latest calcs for crypto
+            Calc.findOneAndUpdate({'instrument': crypto}, {'instrument': crypto}, {upsert:true}, function(err, myCalc){
+                if (err) {
+                    console.log(err.message);
+                } else {
+                // update longTermMin and longTermMax if relevant
+                // if latest < longTermMin
+                // --> if myCalc.trend === "falling" --> still falling
+                // --> else if myCalc.trend === "rising" --> reset to falling, sell at latest(?)
+                // if latest > longTermMax
+                // --> if myCalc.trend === "rising" --> still rising
+                // --> else if myCalc.trend === "falling" --> reset to rising, buy at latest(?)
+                // 
+                }
+            });
+
+
         }
     });
 
