@@ -8,7 +8,7 @@ var calcSchema = new mongoose.Schema({
     lastAction: String,
     lastPrice: Number,
     instrument: String,
-    timestamp: Number,
+    lastUpdated: {type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Calc", calcSchema);

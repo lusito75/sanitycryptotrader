@@ -75,7 +75,9 @@ function analysePriceData(crypto) {
                 // if latest > longTermMax
                 // --> if myCalc.trend === "rising" --> still rising
                 // --> else if myCalc.trend === "falling" --> reset to rising, buy at latest(?)
-                // 
+                //
+                myCalc.lastUpdated = Date.now;
+                myCalc.save(); 
                 }
             });
 
