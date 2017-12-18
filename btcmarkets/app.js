@@ -2,7 +2,8 @@ var secrets    = require('./secrets.json'),
     BTCMarkets = require('btc-markets'),
     mongoose   = require('mongoose'),
     Tick       = require('./models/ticks'),
-    Calc       = require('./models/calcs')
+    Calc       = require('./models/calcs'),
+    helperCalc = require('./helpers/calculations');
 
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
@@ -32,8 +33,8 @@ function capturePriceData(btcclient, crypto, currency) {
     btcclient.getTick(crypto, currency, function(err, data)
     {
         if(!err){
-            // console.log(data);
-            // console.log('\n\n\n');
+            console.log(crypto + ' tick captured ...');
+            console.log('\n');
             Tick.create(data, function(err, newData){
                 if (err) { console.log(err)}
             });
@@ -59,80 +60,20 @@ function analysePriceData(crypto) {
             var min    = Math.min.apply(null, priceArray ),
                 max    = Math.max.apply(null, priceArray );
                 latest = priceArray[0];
-            // console.log(crypto + ' sample MIN: ' + min + ' sample MAX: ' + max + ' latest: ' + latest);
+            // console.log(crypto + ' min: ' + min + ' max: ' + max + ' latest: ' + latest);
             var timestamp = new Date(Date.now());
             console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
+            console.log('\n');
 
-            // retrieve latest calcs for crypto
-            Calc.findOneAndUpdate({'instrument': crypto}, {'instrument': crypto}, {upsert:true}, function(err, myCalc){
-                if (err) {
-                    console.log(err.message);
-                } else {
-                // update longTermMin and longTermMax if relevant
-                if (!myCalc.longTermMin) {
-                    myCalc.longTermMin = min;
-                }
-                else if (min < myCalc.longTermMin){
-                    myCalc.longTermMin = min;
-                }
-                if (!myCalc.longTermMax) {
-                    myCalc.longTermMax = max;
-                }
-                else if (max > myCalc.longTermMax){
-                    myCalc.longTermMax = max;
-                }
-                if (myCalc.lastAction === "buy"){
-                    var profit = ((latest - myCalc.lastPrice) / myCalc.lastPrice)*100;
-                    if (profit >= 10){
-                        console.log(crypto + " SELL for " + profit +"% @" + latest);
-                        //update lastPrice, update lastAction, average out running profit
-                        myCalc.lastPrice = latest;
-                        myCalc.lastAction = "sell";
-                        var avg = (myCalc.runningProfit + profit) / 2;
-                        myCalc.runningProfit = avg;
-                    }
-                }
-                else if (myCalc.lastAction === "sell"){
-                    //
-                    if (latest <= min){
-                        console.log(crypto + " lowest value in last week: @" + latest + " BUY moderate");
-                        if (latest <= myCalc.longTermMin) {
-                            console.log(crypto + " lowest value on record: @" + latest + " BUY strong");
-                        }
-                        // console.log(crypto + " BUY for " + latest);
-                        //update lastPrice, update lastAction
-                    }
-                    if (latest <= max){
-                        console.log(crypto + " latest price lower than last week peak: @" + latest + " BUY moderate");
-                        if (latest <= myCalc.longTermMax) {
-                            console.log(crypto + " latest price lower than recorded peak: @" + latest + " BUY strong");
-                        }
-                        // console.log(crypto + " BUY for " + latest);
-                        //update lastPrice, update lastAction
-                    }
-                }
-                // if latest < longTermMin
-                // --> if myCalc.trend === "falling" --> still falling
-                // --> else if myCalc.trend === "rising" --> reset to falling, sell at latest(?)
-                // if latest > longTermMax
-                // --> if myCalc.trend === "rising" --> still rising
-                // --> else if myCalc.trend === "falling" --> reset to rising, buy at latest(?)
-                //
-                myCalc.save();
-                }
-            });
-
-
+            helperCalc.updateCalc(crypto, min, max, latest);
         }
     });
-
-
 }
 
 setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 600000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 900000);
+setInterval(analysePriceData.bind(null, "BTC"), 900000); //900000 (15 minutes)
 setInterval(analysePriceData.bind(null, "ETH"), 900000);
 setInterval(analysePriceData.bind(null, "LTC"), 900000);
