@@ -7,7 +7,10 @@ var calcSchema = new mongoose.Schema({
     longTermMax: Number,
     trend: String,
     lastAction: String,
+    recommendedAction: String,
     lastPrice: Number,
+    percentGain: Number,
+    runningProfit: Number,
     instrument: String,
 });
 
