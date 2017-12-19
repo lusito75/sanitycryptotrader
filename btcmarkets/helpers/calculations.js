@@ -10,29 +10,30 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             console.log(err.message);
         } else {
             // update longTermMin and longTermMax if relevant
-            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest);
-            if (!myCalc.longTermMin) {
-                myCalc.longTermMin = min;
-            }
+            if(!myCalc.previousPrice) { myCalc.previousPrice = latest; }
+            var change = ( (latest - myCalc.previousPrice) / myCalc.previousPrice )*100;
+
+            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + ' % change: ' + change);
+
+            if (!myCalc.longTermMin) { myCalc.longTermMin = min; }
             else if (min < myCalc.longTermMin){
                 myCalc.longTermMin = min;
             }
-            if (!myCalc.longTermMax) {
-                myCalc.longTermMax = max;
-            }
+            if (!myCalc.longTermMax) { myCalc.longTermMax = max; }
             else if (max > myCalc.longTermMax){
                 myCalc.longTermMax = max;
             }
             if (myCalc.lastAction === "buy"){
-                var profit = ((latest - myCalc.lastPrice) / myCalc.lastPrice)*100;
+                var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
                 if (profit >= 10){
                     console.log(crypto + " SELL for " + profit +"% @" + latest);
-                    //update lastPrice, update lastAction, average out running profit
-                    myCalc.lastPrice = latest;
+                    //update lastTradedPrice, update lastAction, average out running profit
+                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
                     var avg = (myCalc.runningProfit + profit) / 2;
                     myCalc.runningProfit = avg;
                 }
+                // add a stop loss condition?
             }
             else if (myCalc.lastAction === "sell"){
                 if (latest <= min){
@@ -41,15 +42,15 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                         console.log(crypto + " lowest value on record: @" + latest + " BUY strong");
                     }
                     // console.log(crypto + " BUY for " + latest);
-                    //update lastPrice, update lastAction
+                    //update lastTradedPrice, update lastAction
                 }
-                if (latest <= max){
+                if (latest < max){
                     console.log(crypto + " latest price lower than last week peak: @" + latest + " BUY moderate");
-                    if (latest <= myCalc.longTermMax) {
+                    if (latest < myCalc.longTermMax) {
                         console.log(crypto + " latest price lower than recorded peak: @" + latest + " BUY strong");
                     }
                     // console.log(crypto + " BUY for " + latest);
-                    //update lastPrice, update lastAction
+                    //update lastTradedPrice, update lastAction
                 }
             }
             // if latest < longTermMin
@@ -59,6 +60,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             // --> if myCalc.trend === "rising" --> still rising
             // --> else if myCalc.trend === "falling" --> reset to rising, buy at latest(?)
             //
+            myCalc.previousPrice = latest;
             myCalc.save();
         }
     });

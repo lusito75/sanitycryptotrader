@@ -74,6 +74,6 @@ setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 600000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 900000); //900000 (15 minutes)
-setInterval(analysePriceData.bind(null, "ETH"), 900000);
-setInterval(analysePriceData.bind(null, "LTC"), 900000);
+setInterval(analysePriceData.bind(null, "BTC"), 10000); //900000 (15 minutes)
+setInterval(analysePriceData.bind(null, "ETH"), 10000);
+setInterval(analysePriceData.bind(null, "LTC"), 10000);
