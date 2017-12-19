@@ -9,12 +9,15 @@ helperObj.updateCalc = function (crypto, min, max, latest){
         if (err) {
             console.log(err.message);
         } else {
-            // update longTermMin and longTermMax if relevant
-            if(!myCalc.previousPrice) { myCalc.previousPrice = latest; }
+            // initialise some values
+            if (!myCalc.previousPrice) { myCalc.previousPrice = latest; }
+            if (!myCalc.trend) { myCalc.trend = ""; }
             var change = ( (latest - myCalc.previousPrice) / myCalc.previousPrice )*100;
 
-            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + ' % change: ' + change);
+            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + 
+                        ' previous: ' + myCalc.previousPrice +' .. % change: ' + change);
 
+            // update longTermMin and longTermMax if relevant
             if (!myCalc.longTermMin) { myCalc.longTermMin = min; }
             else if (min < myCalc.longTermMin){
                 myCalc.longTermMin = min;
@@ -23,6 +26,14 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             else if (max > myCalc.longTermMax){
                 myCalc.longTermMax = max;
             }
+
+            // whats the trend?
+            if (change < 0) {
+                myCalc.trend += "d";
+            } else if (change > 0) {
+                myCalc.trend += "u";
+            } else { myCalc.trend += "."; }
+
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
                 if (profit >= 10){
