@@ -3,6 +3,15 @@ var Calc   = require('../models/calcs');
 
 var helperObj = {};
 
+function truncateString (inputStr, strlength) {
+    if (inputStr.length > strlength) {
+        var tmpStr = inputStr.substring(inputStr.length - strlength); // chop off the oldest chars
+        return tmpStr;
+    } else {
+        return inputStr;
+    }
+}
+
 helperObj.updateCalc = function (crypto, min, max, latest){
     // retrieve latest calcs for crypto
     Calc.findOneAndUpdate({'instrument': crypto}, {'instrument': crypto}, {upsert:true}, function(err, myCalc){
@@ -33,6 +42,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             } else if (change > 0) {
                 myCalc.trend += "u";
             } else { myCalc.trend += "."; }
+            myCalc.trend = truncateString(myCalc.trend, 672); // 672 samples = 1 week @ 15 min samples
 
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
@@ -46,7 +56,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                 }
                 // add a stop loss condition?
             }
-            else if (myCalc.lastAction === "sell"){
+            else {
                 if (latest <= min){
                     console.log(crypto + " lowest value in last week: @" + latest + " BUY moderate");
                     if (latest <= myCalc.longTermMin) {

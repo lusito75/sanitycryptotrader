@@ -16,7 +16,7 @@ mongoose.connect(mongoUrl);
 client.getAccountBalances(function(err, data)
 {
     if (err){
-        console.log(err);
+        console.log(err.message);
     }
     else {
         console.log('\n\n');
@@ -36,9 +36,9 @@ function capturePriceData(btcclient, crypto, currency) {
             console.log(crypto + ' tick captured ...');
             console.log('\n');
             Tick.create(data, function(err, newData){
-                if (err) { console.log(err)}
+                if (err) { console.log(err.message)}
             });
-        }
+        } else { console.log(err.message); }
     });
 }
 
@@ -70,10 +70,14 @@ function analysePriceData(crypto) {
     });
 }
 
-setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 600000);
+setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 600000); // 600000 (10 minutes)
 setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 600000);
+setInterval(capturePriceData.bind(null, client, "BCH", "AUD"), 600000);
+setInterval(capturePriceData.bind(null, client, "XRP", "AUD"), 600000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 10000); //900000 (15 minutes)
-setInterval(analysePriceData.bind(null, "ETH"), 10000);
-setInterval(analysePriceData.bind(null, "LTC"), 10000);
+setInterval(analysePriceData.bind(null, "BTC"), 900000); //900000 (15 minutes)
+setInterval(analysePriceData.bind(null, "ETH"), 900000);
+setInterval(analysePriceData.bind(null, "LTC"), 900000);
+setInterval(analysePriceData.bind(null, "BCH"), 900000);
+setInterval(analysePriceData.bind(null, "XRP"), 900000);
