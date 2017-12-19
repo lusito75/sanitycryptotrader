@@ -1,1 +1,8 @@
 db.calcs.findOneAndUpdate({instrument:"BTC"}, {$set: {lastAction: "", recommendedAction: "", percentGain: 0, lastTradedPrice: 0, runningProfit: 0}})
+
+
+
+//initial positions
+db.calcs.findOneAndUpdate({instrument:"BTC"}, {$set: {lastAction: "sell", lastPrice: 23050, runningProfit: 180}})
+db.calcs.findOneAndUpdate({instrument:"ETH"}, {$set: {lastAction: "sell", lastPrice: 1000, runningProfit: 100}})
+db.calcs.findOneAndUpdate({instrument:"LTC"}, {$set: {lastAction: "sell", lastPrice: 425, runningProfit: 325}})
