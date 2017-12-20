@@ -21,10 +21,13 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             // initialise some values
             if (!myCalc.previousPrice) { myCalc.previousPrice = latest; }
             if (!myCalc.trend) { myCalc.trend = ""; }
+            if (!myCalc.percentGain) { myCalc.percentGain = "0"; }
             var change = ( (latest - myCalc.previousPrice) / myCalc.previousPrice )*100;
 
             console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + 
                         ' previous: ' + myCalc.previousPrice +' .. % change: ' + change);
+            // update average gain / loss
+            myCalc.percentGain += (myCalc.percentGain + change) / 2;
 
             // update longTermMin and longTermMax if relevant
             if (!myCalc.longTermMin) { myCalc.longTermMin = min; }

@@ -10,7 +10,7 @@ var calcSchema = new mongoose.Schema({
     recommendedAction: String,  // "buy" or "sell"
     previousPrice: Number,      // previous sample price
     lastTradedPrice: Number,    // last price achieve in a buy or sell action
-    percentGain: Number,        // gain/loss since last trade
+    percentGain: Number,        // average percentage gain/loss over recorded data
     runningProfit: Number,      // accumulated profit over several trades
     instrument: String,         // crypto currency, eg "BTC", "ETH", "LTC", "BCH", "XRP"
 });
