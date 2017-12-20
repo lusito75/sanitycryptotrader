@@ -24,10 +24,12 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             if (!myCalc.percentGain) { myCalc.percentGain = "0"; }
             var change = ( (latest - myCalc.previousPrice) / myCalc.previousPrice )*100;
 
-            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + 
-                        ' previous: ' + myCalc.previousPrice +' .. % change: ' + change);
             // update average gain / loss
-            myCalc.percentGain += (myCalc.percentGain + change) / 2;
+            var avg = (myCalc.percentGain + change) / 2;
+            myCalc.percentGain = avg;
+
+            console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + 
+                        ' previous: ' + myCalc.previousPrice +' .. change % : ' + change + ' avg %: ' + avg);
 
             // update longTermMin and longTermMax if relevant
             if (!myCalc.longTermMin) { myCalc.longTermMin = min; }
@@ -61,17 +63,17 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             }
             else {
                 if (latest <= min){
-                    console.log(crypto + " lowest value in last week: @" + latest + " BUY moderate");
+                    // console.log(crypto + " lowest value in last week: @" + latest + " BUY moderate");
                     if (latest <= myCalc.longTermMin) {
-                        console.log(crypto + " lowest value on record: @" + latest + " BUY strong");
+                        // console.log(crypto + " lowest value on record: @" + latest + " BUY strong");
                     }
                     // console.log(crypto + " BUY for " + latest);
                     //update lastTradedPrice, update lastAction
                 }
                 if (latest < max){
-                    console.log(crypto + " latest price lower than last week peak: @" + latest + " BUY moderate");
+                    // console.log(crypto + " latest price lower than last week peak: @" + latest + " BUY moderate");
                     if (latest < myCalc.longTermMax) {
-                        console.log(crypto + " latest price lower than recorded peak: @" + latest + " BUY strong");
+                        // console.log(crypto + " latest price lower than recorded peak: @" + latest + " BUY strong");
                     }
                     // console.log(crypto + " BUY for " + latest);
                     //update lastTradedPrice, update lastAction

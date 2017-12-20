@@ -33,8 +33,8 @@ function capturePriceData(btcclient, crypto, currency) {
     btcclient.getTick(crypto, currency, function(err, data)
     {
         if(!err){
-            console.log(crypto + ' tick captured ...');
-            console.log('\n');
+            var timestamp = new Date(Date.now());
+            console.log(crypto + ' tick captured ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
             Tick.create(data, function(err, newData){
                 if (err) { console.log(err.message)}
             });
@@ -63,7 +63,6 @@ function analysePriceData(crypto) {
             // console.log(crypto + ' min: ' + min + ' max: ' + max + ' latest: ' + latest);
             var timestamp = new Date(Date.now());
             console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
-            console.log('\n');
 
             helperCalc.updateCalc(crypto, min, max, latest);
         }
