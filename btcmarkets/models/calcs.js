@@ -13,6 +13,8 @@ var calcSchema = new mongoose.Schema({
     percentGain: Number,        // average percentage gain/loss over recorded data
     runningProfit: Number,      // accumulated profit over several trades
     instrument: String,         // crypto currency, eg "BTC", "ETH", "LTC", "BCH", "XRP"
+    targetMargin: Number,       // target profit margin as a percentage
+    tradingEnabled: Boolean,    // flag to enable/disable trades on this crypto 
 });
 
 calcSchema.plugin(timestamps);
