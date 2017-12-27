@@ -27,27 +27,30 @@ function doWeSell (inCalc, inLatest, inChange, inMax) {
     // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
 
     // 5% of highest maximum = myCalc.longTermMax * 0.95
-    if (inLatest >= (inCalc.longTermMax * 0.95)) {
+    if ( (inLatest/inCalc.longTermMax >= 0.95) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' STRONG sell');
         weight += 25;
+        sell = true;
     }
     // 2% of recent maximum = inMin * 0.98
-    if (inLatest >= (inMax * 0.98)) {
+    if ( (inLatest/inMax >= 0.98) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' short term maximum detected .. medium sell');
         weight += 25;
+        sell = true;
     }
     // has the trend been mostly up and levelling off?
     if ((ups/downs >= 0.98) && (ups/downs <= 1.02) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible maxing out .. medium sell');
         weight += 25;
-        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-            console.log(inCalc.instrument + ' very flat medium sell');
-            weight += 25;
-        }
+        sell = true;
+    }
+    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
+        console.log(inCalc.instrument + ' very flat medium sell');
+        weight += 25;
+        sell = true;
     }
 
-    if (weight >= 50) {
-        sell = true;
+    if (sell) {
         console.log('**SELL** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
     }
 
@@ -63,27 +66,30 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
     // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
 
     // 5% of lowest minimum = myCalc.longTermMin * 1.05
-    if (inLatest <= (inCalc.longTermMin * 1.05)) {
+    if ( (inLatest/inCalc.longTermMin <= 1.05) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' STRONG buy');
         weight += 25;
+        buy = true;
     }
     // 2% of recent minimum = inMin * 1.02
-    if (inLatest <= (inMin * 1.02)) {
+    if ( (inLatest/inMin <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' short term minimum detected .. medium buy');
         weight += 25;
+        buy = true;
     }
     // has the trend been mostly down and bottoming out?
-    if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain <= 0.5)) {
+    if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible bottoming out .. medium buy');
         weight += 25;
-        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-            console.log(inCalc.instrument + ' very flat medium buy');
-            weight += 25;
-        }
+        buy = true;
+    }
+    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
+        console.log(inCalc.instrument + ' very flat medium buy');
+        weight += 25;
+        buy = true;
     }
 
-    if (weight >= 50) {
-        buy = true;
+    if (buy) {
         console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
     }
 
@@ -128,7 +134,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                     // whats the sell weighting?
                     let {sell, weight} = doWeSell(myCalc, latest, change, max);
                     if ( sell ) {
-                        console.log(crypto + " SELL order for " + profit +"% @" + latest);
+                        console.log(crypto + " SELL order for " + profit +"% @" + latest+' with weighting '+weight+'% of investment allowance');
                         //update lastTradedPrice, update lastAction, average out running profit
                         myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                         myCalc.lastAction = "sell";
