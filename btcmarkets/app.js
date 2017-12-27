@@ -74,9 +74,11 @@ setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "BCH", "AUD"), 600000);
 setInterval(capturePriceData.bind(null, client, "XRP", "AUD"), 600000);
+setInterval(capturePriceData.bind(null, client, "ETC", "AUD"), 600000);
 
 setInterval(analysePriceData.bind(null, "BTC"), 900000); //900000 (15 minutes)
 setInterval(analysePriceData.bind(null, "ETH"), 900000);
 setInterval(analysePriceData.bind(null, "LTC"), 900000);
 setInterval(analysePriceData.bind(null, "BCH"), 900000);
 setInterval(analysePriceData.bind(null, "XRP"), 900000);
+setInterval(analysePriceData.bind(null, "ETC"), 900000);
