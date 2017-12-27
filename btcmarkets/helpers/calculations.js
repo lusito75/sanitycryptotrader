@@ -3,13 +3,83 @@ var Calc   = require('../models/calcs');
 
 var helperObj = {};
 
-function truncateString (inputStr, strlength) {
-    if (inputStr.length > strlength) {
-        var tmpStr = inputStr.substring(inputStr.length - strlength); // chop off the oldest chars
+function buildTrend (inputStr, change) {
+    var maxLength = 100; // 100 samples @15 min samples = 1500 mins ~24hrs
+    if (change < 0) {
+        inputStr += "d";
+    } else if (change > 0) {
+        inputStr += "u";
+    } else { inputStr += "."; }
+    if (inputStr.length > maxLength) {
+        var tmpStr = inputStr.substring(inputStr.length - maxLength); // chop off the oldest chars
         return tmpStr;
     } else {
         return inputStr;
     }
+}
+
+function doWeSell (inCalc, inLatest, inChange, inMax) {
+    var weight = 0;
+    var sell   = false;
+    var ups    = (inCalc.trend.match(/u/g) || []).length;
+    var downs  = (inCalc.trend.match(/d/g) || []).length;
+    var flats  = (inCalc.trend.split(".").length -1);
+    // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
+
+    // 5% of highest maximum = myCalc.longTermMax * 0.95
+    if (inLatest >= (inCalc.longTermMax * 0.95)) {
+        console.log(inCalc.instrument + ' STRONG sell');
+        weight += 25;
+    }
+    // 2% of recent maximum = inMin * 0.98
+    if (inLatest >= (inMax * 0.98)) {
+        console.log(inCalc.instrument + ' short term maximum detected .. medium sell');
+        weight += 25;
+    }
+    // has the trend been mostly up and levelling off?
+    if ((ups >= downs) && (inCalc.percentGain <= 0.5)) {
+        console.log(inCalc.instrument + ' possible maxing out .. medium sell');
+        weight += 25;
+    }
+
+    if (weight >= 50) {
+        sell = true;
+        console.log('**SELL** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
+    }
+
+    return {sell, weight} ;
+}
+
+function doWeBuy (inCalc, inLatest, inChange, inMin) {
+    var weight = 0;
+    var buy    = false;
+    var ups    = (inCalc.trend.match(/u/g) || []).length;
+    var downs  = (inCalc.trend.match(/d/g) || []).length;
+    var flats  = (inCalc.trend.split(".").length -1);
+    // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
+
+    // 5% of lowest minimum = myCalc.longTermMin * 1.05
+    if (inLatest <= (inCalc.longTermMin * 1.05)) {
+        console.log(inCalc.instrument + ' STRONG buy');
+        weight += 25;
+    }
+    // 2% of recent minimum = inMin * 1.02
+    if (inLatest <= (inMin * 1.02)) {
+        console.log(inCalc.instrument + ' short term minimum detected .. medium buy');
+        weight += 25;
+    }
+    // has the trend been mostly down and bottoming out?
+    if ((downs >= ups) && (inCalc.percentGain <= 0.5)) {
+        console.log(inCalc.instrument + ' possible bottoming out .. medium buy');
+        weight += 25;
+    }
+
+    if (weight >= 50) {
+        buy = true;
+        console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
+    }
+
+    return {buy, weight} ;
 }
 
 helperObj.updateCalc = function (crypto, min, max, latest){
@@ -42,17 +112,17 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             }
 
             // whats the trend?
-            if (change < 0) {
-                myCalc.trend += "d";
-            } else if (change > 0) {
-                myCalc.trend += "u";
-            } else { myCalc.trend += "."; }
-            myCalc.trend = truncateString(myCalc.trend, 672); // 672 samples = 1 week @ 15 min samples
+            myCalc.trend = buildTrend(myCalc.trend, change);
 
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
-                if (profit >= 10){
-                    console.log(crypto + " SELL for " + profit +"% @" + latest);
+                if ((profit >= myCalc.targetMargin) && (myCalc.tradingEnabled) ){
+                    // whats the sell weighting?
+                    let {sell, weight} = doWeSell(myCalc, latest, change, max);
+                    if ( sell ) {
+                        console.log(crypto + " SELL order for " + profit +"% @" + latest);
+                    }
+                    
                     //update lastTradedPrice, update lastAction, average out running profit
                     myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
@@ -62,30 +132,12 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                 // add a stop loss condition?
             }
             else {
-                if (latest <= min){
-                    // console.log(crypto + " lowest value in last week: @" + latest + " BUY moderate");
-                    if (latest <= myCalc.longTermMin) {
-                        // console.log(crypto + " lowest value on record: @" + latest + " BUY strong");
-                    }
-                    // console.log(crypto + " BUY for " + latest);
-                    //update lastTradedPrice, update lastAction
-                }
-                if (latest < max){
-                    // console.log(crypto + " latest price lower than last week peak: @" + latest + " BUY moderate");
-                    if (latest < myCalc.longTermMax) {
-                        // console.log(crypto + " latest price lower than recorded peak: @" + latest + " BUY strong");
-                    }
-                    // console.log(crypto + " BUY for " + latest);
-                    //update lastTradedPrice, update lastAction
+                let {buy, weight} = doWeBuy (myCalc, latest, change, min);
+                if (buy) {
+                    console.log(crypto + ' BUY order: '+latest+' at '+weight+'% of investment allowance');
                 }
             }
-            // if latest < longTermMin
-            // --> if myCalc.trend === "falling" --> still falling
-            // --> else if myCalc.trend === "rising" --> reset to falling, sell at latest(?)
-            // if latest > longTermMax
-            // --> if myCalc.trend === "rising" --> still rising
-            // --> else if myCalc.trend === "falling" --> reset to rising, buy at latest(?)
-            //
+
             myCalc.previousPrice = latest;
             myCalc.save();
         }
