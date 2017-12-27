@@ -3,6 +3,15 @@ var Calc   = require('../models/calcs');
 
 var helperObj = {};
 
+function truncateString (inputStr, strlength) {
+    if (inputStr.length > strlength) {
+        var tmpStr = inputStr.substring(inputStr.length - strlength); // chop off the oldest chars
+        return tmpStr;
+    } else {
+        return inputStr;
+    }
+}
+
 function buildTrend (inputStr, change) {
     var maxLength = 100; // 100 samples @15 min samples = 1500 mins ~24hrs
     if (change < 0) {
@@ -10,12 +19,8 @@ function buildTrend (inputStr, change) {
     } else if (change > 0) {
         inputStr += "u";
     } else { inputStr += "."; }
-    if (inputStr.length > maxLength) {
-        var tmpStr = inputStr.substring(inputStr.length - maxLength); // chop off the oldest chars
-        return tmpStr;
-    } else {
-        return inputStr;
-    }
+
+    return truncateString(inputStr, maxLength);
 }
 
 function doWeSell (inCalc, inLatest, inChange, inMax) {
@@ -89,6 +94,9 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         buy = true;
     }
 
+    // if we don't have enough samples ... no buying allowed
+    if (inCalc.trend.length < 50) { buy = false; }
+
     if (buy) {
         console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
     }
@@ -138,6 +146,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                         //update lastTradedPrice, update lastAction, average out running profit
                         myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                         myCalc.lastAction = "sell";
+                        myCalc.trend = truncateString(myCalc.trend, 40); //reduce trend data so more samples can build up before another buy
                         var avg = (myCalc.runningProfit + profit) / 2;
                         myCalc.runningProfit = avg;
                     }
