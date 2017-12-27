@@ -40,6 +40,10 @@ function doWeSell (inCalc, inLatest, inChange, inMax) {
     if ((ups >= downs) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible maxing out .. medium sell');
         weight += 25;
+        if ( (flats / (flats+ups+downs))*100 >= 50 ) { //50% no movements
+            console.log(inCalc.instrument + ' very flat medium sell');
+            weight += 25;
+        }
     }
 
     if (weight >= 50) {
@@ -72,6 +76,10 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
     if ((downs >= ups) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible bottoming out .. medium buy');
         weight += 25;
+        if ( (flats / (flats+ups+downs))*100 >= 50 ) { //50% no movements
+            console.log(inCalc.instrument + ' very flat medium buy');
+            weight += 25;
+        }
     }
 
     if (weight >= 50) {
@@ -121,13 +129,12 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                     let {sell, weight} = doWeSell(myCalc, latest, change, max);
                     if ( sell ) {
                         console.log(crypto + " SELL order for " + profit +"% @" + latest);
+                        //update lastTradedPrice, update lastAction, average out running profit
+                        myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                        myCalc.lastAction = "sell";
+                        var avg = (myCalc.runningProfit + profit) / 2;
+                        myCalc.runningProfit = avg;
                     }
-                    
-                    //update lastTradedPrice, update lastAction, average out running profit
-                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
-                    myCalc.lastAction = "sell";
-                    var avg = (myCalc.runningProfit + profit) / 2;
-                    myCalc.runningProfit = avg;
                 }
                 // add a stop loss condition?
             }
@@ -135,6 +142,9 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                 let {buy, weight} = doWeBuy (myCalc, latest, change, min);
                 if (buy) {
                     console.log(crypto + ' BUY order: '+latest+' at '+weight+'% of investment allowance');
+                    //update lastTradedPrice, update lastAction, average out running profit
+                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                    myCalc.lastAction = "buy";
                 }
             }
 
