@@ -37,10 +37,10 @@ function doWeSell (inCalc, inLatest, inChange, inMax) {
         weight += 25;
     }
     // has the trend been mostly up and levelling off?
-    if ((ups >= downs) && (inCalc.percentGain <= 0.5)) {
+    if ((ups/downs >= 0.98) && (ups/downs <= 1.02) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible maxing out .. medium sell');
         weight += 25;
-        if ( (flats / (flats+ups+downs))*100 >= 50 ) { //50% no movements
+        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
             console.log(inCalc.instrument + ' very flat medium sell');
             weight += 25;
         }
@@ -73,10 +73,10 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         weight += 25;
     }
     // has the trend been mostly down and bottoming out?
-    if ((downs >= ups) && (inCalc.percentGain <= 0.5)) {
+    if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible bottoming out .. medium buy');
         weight += 25;
-        if ( (flats / (flats+ups+downs))*100 >= 50 ) { //50% no movements
+        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
             console.log(inCalc.instrument + ' very flat medium buy');
             weight += 25;
         }
