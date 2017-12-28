@@ -151,7 +151,15 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                         myCalc.runningProfit = avg;
                     }
                 }
-                // add a stop loss condition?
+                // stop the loss!!
+                if (profit <= -(myCalc.targetMargin)) {
+                    console.log(crypto + " stop-loss SELL order for " + profit +"% @" + latest);
+                    //update lastTradedPrice, update lastAction, average out running profit
+                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                    myCalc.lastAction = "sell";
+                    var avg = (myCalc.runningProfit + profit) / 2;
+                    myCalc.runningProfit = avg;                
+                }
             }
             else {
                 let {buy, weight} = doWeBuy (myCalc, latest, change, min);
