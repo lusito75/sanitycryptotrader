@@ -23,7 +23,7 @@ function buildTrend (inputStr, change) {
     return truncateString(inputStr, maxLength);
 }
 
-function doWeSell (inCalc, inLatest, inChange, inMax) {
+function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
     var weight = 0;
     var sell   = false;
     var ups    = (inCalc.trend.match(/u/g) || []).length;
@@ -31,32 +31,39 @@ function doWeSell (inCalc, inLatest, inChange, inMax) {
     var flats  = (inCalc.trend.split(".").length -1);
     // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
 
-    // 5% of highest maximum = myCalc.longTermMax * 0.95
-    if ( (inLatest/inCalc.longTermMax >= 0.95) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' STRONG sell');
-        weight += 25;
-        sell = true;
-    }
-    // 2% of recent maximum = inMin * 0.98
-    if ( (inLatest/inMax >= 0.98) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' short term maximum detected .. medium sell');
-        weight += 25;
-        sell = true;
-    }
-    // has the trend been mostly up and levelling off?
-    if ((ups/downs >= 0.98) && (ups/downs <= 1.02) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' possible maxing out .. medium sell');
-        weight += 25;
-        sell = true;
-    }
-    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-        console.log(inCalc.instrument + ' very flat medium sell');
-        weight += 25;
-        sell = true;
+    if (inProfit >= inCalc.targetMargin && (inCalc.tradingEnabled)) {
+        // 5% of highest maximum = myCalc.longTermMax * 0.95
+        if (inLatest / inCalc.longTermMax >= 0.95 && inCalc.percentGain <= 0.5) {
+          console.log(inCalc.instrument + " STRONG sell");
+          weight += 25;
+          sell = true;
+        }
+        // 2% of recent maximum = inMin * 0.98
+        if (inLatest / inMax >= 0.98 && inCalc.percentGain <= 0.5) {
+          console.log(inCalc.instrument + " short term maximum detected .. medium sell");
+          weight += 25;
+          sell = true;
+        }
+        // has the trend been mostly up and levelling off?
+        if (ups / downs >= 0.98 && ups / downs <= 1.02 && inCalc.percentGain <= 0.5) {
+          console.log(inCalc.instrument + " possible maxing out .. medium sell");
+          weight += 25;
+          sell = true;
+        }
+        if (flats / (flats + ups + downs) >= 0.4) {
+          //40% no movements
+          console.log(inCalc.instrument + " very flat medium sell");
+          weight += 25;
+          sell = true;
+        }
+    } else if (inProfit <= -(inCalc.targetMargin)) {
+        // stop the loss!!
+        weight = 100; sell = true;
+        console.log('**STOP LOSS** ' + inCalc.instrument);
     }
 
     if (sell) {
-        console.log('**SELL** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
+        console.log('**SELL** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest + ' for profit: ' + inProfit + '%');
     }
 
     return {sell, weight} ;
@@ -94,8 +101,8 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         buy = true;
     }
 
-    // if we don't have enough samples ... no buying allowed
-    if (inCalc.trend.length < 50) { buy = false; }
+    // if we don't have enough samples or if trading is disabled... no buying allowed
+    if (inCalc.trend.length < 50 || !inCalc.tradingEnabled) { buy = false; }
 
     if (buy) {
         console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
@@ -138,27 +145,16 @@ helperObj.updateCalc = function (crypto, min, max, latest){
 
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
-                if ((profit >= myCalc.targetMargin) && (myCalc.tradingEnabled) ){
-                    // whats the sell weighting?
-                    let {sell, weight} = doWeSell(myCalc, latest, change, max);
-                    if ( sell ) {
-                        console.log(crypto + " SELL order for " + profit +"% @" + latest+' with weighting '+weight+'% of investment allowance');
-                        //update lastTradedPrice, update lastAction, average out running profit
-                        myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
-                        myCalc.lastAction = "sell";
-                        myCalc.trend = truncateString(myCalc.trend, 40); //reduce trend data so more samples can build up before another buy
-                        var avg = (myCalc.runningProfit + profit) / 2;
-                        myCalc.runningProfit = avg;
-                    }
-                }
-                // stop the loss!!
-                if (profit <= -(myCalc.targetMargin)) {
-                    console.log(crypto + " stop-loss SELL order for " + profit +"% @" + latest);
+                // whats the sell weighting?
+                let {sell, weight} = doWeSell(myCalc, latest, profit, change, max);
+                if (sell) {
+                    console.log(crypto + " SELL order for " + profit +"% @" + latest+' with weighting '+weight+'% of investment allowance');
                     //update lastTradedPrice, update lastAction, average out running profit
                     myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
+                    myCalc.trend = truncateString(myCalc.trend, 40); //reduce trend data so more samples can build up before another buy
                     var avg = (myCalc.runningProfit + profit) / 2;
-                    myCalc.runningProfit = avg;                
+                    myCalc.runningProfit = avg;
                 }
             }
             else {
