@@ -11,6 +11,11 @@ var express       = require('express'),
     bodyParser    = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
+app.use(function(req, res, next){
+    res.locals.currentUser = req.user;
+    next();
+});
     
 
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);

@@ -11,6 +11,7 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "btc-markets": "0.0.10",
+    "ejs": "^2.5.7",
     "express": "^4.16.2",
     "mongoose": "^4.13.7",
     "mongoose-timestamp": "^0.6.0"
