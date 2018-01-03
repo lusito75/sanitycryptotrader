@@ -44,13 +44,17 @@
         <!--end NAVBAR  -->
 
 
-
-
-
-
-
-
-
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Crypto<input class="form-control" type="text" name="instrument" value="<%= calcs.instrument %>" readonly></label>
+                        <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calcs.previousPrice %>" readonly></label>
+                        <label>Last Traded<input class="form-control" type="number" name="lasttradedprice" value="<%= calcs.lastTradedPrice %>" readonly></label>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
