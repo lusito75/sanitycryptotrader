@@ -5,6 +5,14 @@ var secrets    = require('./secrets.json'),
     Calc       = require('./models/calcs'),
     helperCalc = require('./helpers/calculations');
 
+// web server stuff
+var express       = require('express'),
+    app           = express(),
+    bodyParser    = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
+app.set("view engine", "ejs");
+    
+
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
 var numberConverter = 100000000;    // one hundred million
@@ -69,16 +77,25 @@ function analysePriceData(crypto) {
     });
 }
 
-setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 600000); // 600000 (10 minutes)
-setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 600000);
-setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 600000);
-setInterval(capturePriceData.bind(null, client, "BCH", "AUD"), 600000);
-setInterval(capturePriceData.bind(null, client, "XRP", "AUD"), 600000);
-setInterval(capturePriceData.bind(null, client, "ETC", "AUD"), 600000);
+setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 60000); // 600000 (10 minutes)
+setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 60000);
+setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 60000);
+setInterval(capturePriceData.bind(null, client, "BCH", "AUD"), 60000);
+setInterval(capturePriceData.bind(null, client, "XRP", "AUD"), 60000);
+setInterval(capturePriceData.bind(null, client, "ETC", "AUD"), 60000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 900000); //900000 (15 minutes)
-setInterval(analysePriceData.bind(null, "ETH"), 900000);
-setInterval(analysePriceData.bind(null, "LTC"), 900000);
-setInterval(analysePriceData.bind(null, "BCH"), 900000);
-setInterval(analysePriceData.bind(null, "XRP"), 900000);
-setInterval(analysePriceData.bind(null, "ETC"), 900000);
+setInterval(analysePriceData.bind(null, "BTC"), 90000); //900000 (15 minutes)
+setInterval(analysePriceData.bind(null, "ETH"), 90000);
+setInterval(analysePriceData.bind(null, "LTC"), 90000);
+setInterval(analysePriceData.bind(null, "BCH"), 90000);
+setInterval(analysePriceData.bind(null, "XRP"), 90000);
+setInterval(analysePriceData.bind(null, "ETC"), 90000);
+
+
+// start the web server
+var indexRoutes = require('./routes/index');
+
+app.use(indexRoutes);
+app.listen(5000, function(){
+    console.log("Crypto Trader Server Started");
+});
