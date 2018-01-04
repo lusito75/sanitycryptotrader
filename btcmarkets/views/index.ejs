@@ -5,6 +5,7 @@
         <!-- <link rel="stylesheet" href="/css/lib/bootstrap.min.css"> -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/main.css">
+        <meta http-equiv="refresh" content="90">
     </head>
     <body>
         <!--start NAVBAR  -->
@@ -47,11 +48,15 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="form-group">
-                        <label>Crypto<input class="form-control" type="text" name="instrument" value="<%= calcs.instrument %>" readonly></label>
-                        <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calcs.previousPrice %>" readonly></label>
-                        <label>Last Traded<input class="form-control" type="number" name="lasttradedprice" value="<%= calcs.lastTradedPrice %>" readonly></label>
-                    </div>
+                    <% calcs.forEach(function(calc){ %>
+                        <div class="form-group">
+                            <label>Crypto<input class="form-control" type="text" name="instrument" value="<%= calc.instrument %>" readonly></label>
+                            <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calc.previousPrice %>" readonly></label>
+                            <label>Last Trade / Avg Profit<input class="form-control" type="text" name="lasttradedprice" 
+                                value="<%= calc.lastTradedPrice %> / <%= calc.lastAction %> / <%= calc.runningProfit.toFixed(1) %>%" readonly>
+                            </label>
+                        </div>
+                    <% }) %>
                 </div>
             </div>
         </div>
@@ -59,7 +64,7 @@
 
 
         <div class="container">
-            <p>Sanity Software 2017</p>
+            <p>Sanity Software 2018</p>
         </div>
         <script src="/js/lib/jquery-3.2.1.min.js"></script>        
         <script src="/js/lib/bootstrap.min.js"></script>

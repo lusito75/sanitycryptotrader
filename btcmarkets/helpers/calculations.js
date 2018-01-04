@@ -153,8 +153,12 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                     myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
                     myCalc.trend = truncateString(myCalc.trend, 40); //reduce trend data so more samples can build up before another buy
-                    var avg = (myCalc.runningProfit + profit) / 2;
-                    myCalc.runningProfit = avg;
+                    if (myCalc.runningProfit === 0) {
+                        myCalc.runningProfit = profit;
+                    } else {
+                        var avg = (myCalc.runningProfit + profit) / 2;
+                        myCalc.runningProfit = avg;
+                    }
                 }
             }
             else {
