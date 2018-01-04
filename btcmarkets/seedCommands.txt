@@ -1,5 +1,7 @@
 db.calcs.findOneAndUpdate({instrument:"BTC"}, {$set: {lastAction: "", recommendedAction: "", percentGain: 0, lastTradedPrice: 0, runningProfit: 0}})
 
+// reset the robot
+db.calcs.update({}, {$set: {lastAction:"na", lastTradedPrice:0, runningProfit:0, trend:"."}}, {multi:true})
 
 
 // initial positions, manual entry
@@ -9,7 +11,7 @@ db.calcs.findOneAndUpdate({instrument:"LTC"}, {$set: {lastAction: "sell", lastTr
 db.calcs.findOneAndUpdate({instrument:"XRP"}, {$set: {lastAction: "buy", lastTradedPrice: 1.47, targetMargin: 5}})
 
 // update all docs, with new fields
-db.calcs.update({}, {$set: {percentGain:0}, {multi:true})
+db.calcs.update({}, {$set: {percentGain:0}}, {multi:true})
 db.calcs.update({}, {$set: {targetMargin:10, tradingEnabled:true}}, {multi:true})
 db.calcs.update({}, {$set: {lastAction:"", lastTradedPrice:0}}, {multi:true})
 
