@@ -50,7 +50,7 @@
                 <div class="col-sm-12">
                     <% calcs.forEach(function(calc){ %>
                         <div class="form-group">
-                            <label>Crypto<input class="form-control" type="text" name="instrument" value="<%= calc.instrument %>" readonly></label>
+                            <label><input class="form-control" type="text" name="instrument" value="<%= calc.instrument %>" readonly></label>
                             <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calc.previousPrice %>" readonly></label>
                             <label>Last Trade / Avg Profit<input class="form-control" type="text" name="lasttradedprice" 
                                 value="<%= calc.lastTradedPrice %> / <%= calc.lastAction %> / <%= calc.runningProfit.toFixed(1) %>%" readonly>
@@ -64,7 +64,7 @@
 
 
         <div class="container">
-            <p>Sanity Software 2018</p>
+            <p>Sanity Software 2018             -- updated <%= updated %></p>
         </div>
         <script src="/js/lib/jquery-3.2.1.min.js"></script>        
         <script src="/js/lib/bootstrap.min.js"></script>

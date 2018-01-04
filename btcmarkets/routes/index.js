@@ -9,7 +9,8 @@ router.get("/", function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            res.render("index", {calcs: allCalcs});
+            var latestUpdate = allCalcs[0].updatedAt;
+            res.render("index", {calcs: allCalcs, updated: latestUpdate});
         }
     });
 });
