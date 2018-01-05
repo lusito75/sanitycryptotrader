@@ -24,7 +24,6 @@ function buildTrend (inputStr, change) {
 }
 
 function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
-    var weight = 0;
     var sell   = false;
     var ups    = (inCalc.trend.match(/u/g) || []).length;
     var downs  = (inCalc.trend.match(/d/g) || []).length;
@@ -35,38 +34,34 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
         // 5% of highest maximum = myCalc.longTermMax * 0.95
         if (inLatest / inCalc.longTermMax >= 0.95 && inCalc.percentGain <= 0.5) {
           console.log(inCalc.instrument + " STRONG sell");
-          weight += 25;
           sell = true;
         }
         // 2% of recent maximum = inMin * 0.98
         if (inLatest / inMax >= 0.98 && inCalc.percentGain <= 0.5) {
           console.log(inCalc.instrument + " short term maximum detected .. medium sell");
-          weight += 25;
           sell = true;
         }
         // has the trend been mostly up and levelling off?
         if (ups / downs >= 0.98 && ups / downs <= 1.02 && inCalc.percentGain <= 0.5) {
           console.log(inCalc.instrument + " possible maxing out .. medium sell");
-          weight += 25;
           sell = true;
         }
         if (flats / (flats + ups + downs) >= 0.4) {
           //40% no movements
           console.log(inCalc.instrument + " very flat medium sell");
-          weight += 25;
           sell = true;
         }
     } else if (inProfit <= -(inCalc.targetMargin)) {
         // stop the loss!!
-        weight = 100; sell = true;
+        sell = true;
         console.log('**STOP LOSS** ' + inCalc.instrument);
     }
 
     if (sell) {
-        console.log('**SELL** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest + ' for profit: ' + inProfit + '%');
+        console.log('**SELL** recommended for ' + inCalc.instrument + ' @' + inLatest + ' for profit: ' + inProfit + '%');
     }
 
-    return {sell, weight} ;
+    return sell;
 }
 
 function doWeBuy (inCalc, inLatest, inChange, inMin) {
@@ -145,10 +140,8 @@ helperObj.updateCalc = function (crypto, min, max, latest){
 
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
-                // whats the sell weighting?
-                let {sell, weight} = doWeSell(myCalc, latest, profit, change, max);
-                if (sell) {
-                    console.log(crypto + " SELL order for " + profit +"% @" + latest+' with weighting '+weight+'% of investment allowance');
+                if (doWeSell(myCalc, latest, profit, change, max)) {
+                    console.log(crypto + " SELL order for " + profit +"% @" + latest);
                     //update lastTradedPrice, update lastAction, average out running profit
                     myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
