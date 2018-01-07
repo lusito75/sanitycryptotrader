@@ -42,9 +42,3 @@ getBalance(client, "XRP", function(balance){
         console.log(err, res);
     });
 });
-
-// market sell for 0.0001 BTC
-// client.createOrder("BTC", "AUD", null, 0.0001 * numberConverter, 'Ask', 'Market', null, function(err, data)
-// {
-//     console.log(err, data);
-// });
