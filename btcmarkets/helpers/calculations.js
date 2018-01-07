@@ -51,7 +51,7 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
           console.log(inCalc.instrument + " very flat medium sell");
           sell = true;
         }
-    } else if (inProfit <= -(inCalc.targetMargin)) {
+    } else if (inProfit <= -(inCalc.targetMargin*1.25)) {
         // stop the loss!!
         sell = true;
         console.log('**STOP LOSS** ' + inCalc.instrument);
@@ -123,7 +123,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             myCalc.percentGain = avg;
 
             console.log(crypto + ' recent min: ' + min + ' recent max: ' + max + ' latest: ' + latest + 
-                        ' previous: ' + myCalc.previousPrice +' .. change % : ' + change + ' avg %: ' + avg);
+                        ' previous: ' + myCalc.previousPrice +' .. change: ' + change.toFixed(2) + '%  avg: ' + avg.toFixed(2) + '%');
 
             // update longTermMin and longTermMax if relevant
             if (!myCalc.longTermMin) { myCalc.longTermMin = min; }
@@ -145,7 +145,7 @@ helperObj.updateCalc = function (crypto, min, max, latest){
                     //update lastTradedPrice, update lastAction, average out running profit
                     myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                     myCalc.lastAction = "sell";
-                    myCalc.trend = truncateString(myCalc.trend, 40); //reduce trend data so more samples can build up before another buy
+                    myCalc.trend = truncateString(myCalc.trend, 45); //reduce trend data so more samples can build up before another buy
                     if (myCalc.runningProfit === 0) {
                         myCalc.runningProfit = profit;
                     } else {
