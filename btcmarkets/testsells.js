@@ -27,7 +27,6 @@ function createSellOrder(client, crypto, price, volume, callback){
     console.log("trying to sell "+volume+" "+crypto+" for "+price);
     client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "707070", function(err, data)
     {
-        console.log(err, data);
         callback(err, data);
     });
 }
@@ -39,6 +38,13 @@ getBalance(client, "XRP", function(balance){
     // create buy order .. call createOrder synchronously here
     createSellOrder(client, "XRP", askPrice, volume, function(err, res){
         console.log('**SELL** => BTC response**');
-        console.log(err, res);
+        if (err && !res.success) {
+            // console.log(err.message);
+            console.log(res.errorMessage)
+        }
+        else {
+            console.log(res);
+            // update the calcs object and save to db
+        }
     });
 });
