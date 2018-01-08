@@ -25,7 +25,7 @@ function getBalance(client, crypto, callback) {
 
 function createBuyOrder(client, crypto, price, volume, callback){
     console.log("trying to buy "+volume+" "+crypto+" for "+price);
-    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_696969", function(err, data)
+    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_09", function(err, data)
     {
         callback(err, data);
     });
@@ -34,8 +34,8 @@ function createBuyOrder(client, crypto, price, volume, callback){
 getBalance(client, "AUD", function(balance){
     console.log("my AUD balance is: "+balance);
     // calculate how many cryptos I can get from my allowance
-    var bidPrice = 3.77;
-    var volume = ((balance/numberConverter)/6)/bidPrice;  //take care that volume cannot have decimal points!!
+    var bidPrice = 3.76;
+    var volume = (((balance/numberConverter)/6)/bidPrice).toFixed(8);  //max 8 decimals, so number conversion makes it whole
     // create buy order .. call createOrder synchronously here
     createBuyOrder(client, "XRP", bidPrice, volume, function(err, res){
         console.log('**BUY** => BTC response**');

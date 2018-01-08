@@ -25,7 +25,7 @@ function getBalance(client, crypto, callback) {
 
 function createSellOrder(client, crypto, price, volume, callback){
     console.log("trying to sell "+volume+" "+crypto+" for "+price);
-    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "707070", function(err, data)
+    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "SSPL_09", function(err, data)
     {
         callback(err, data);
     });
