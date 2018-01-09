@@ -149,8 +149,9 @@ function getBalance(client, crypto, callback) {
 }
 
 function createBuyOrder(client, crypto, price, volume, callback){
+    volume = Math.round(volume * numberConverter); //can't have decimal volumes
     console.log("trying to buy "+volume+" "+crypto+" for "+price);
-    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_09", function(err, data)
+    client.createOrder(crypto, "AUD", price * numberConverter, volume, 'Bid', 'Market', "SSPL_09", function(err, data)
     {
         callback(err, data);
     });
