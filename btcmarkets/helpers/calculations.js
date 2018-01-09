@@ -3,6 +3,10 @@ var Calc   = require('../models/calcs');
 
 var helperObj = {};
 
+// BTC client number converter
+var numberConverter = 100000000;    // one hundred million
+
+
 function truncateString (inputStr, strlength) {
     if (inputStr.length > strlength) {
         var tmpStr = inputStr.substring(inputStr.length - strlength); // chop off the oldest chars
@@ -102,11 +106,109 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
     if (buy) {
         console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
     }
-
     return {buy, weight} ;
 }
 
-helperObj.updateCalc = function (crypto, min, max, latest){
+// ===============BUY functions=================================================================================================
+function initiateBuy(client, crypto, price, weight, callback) {
+    getBalance(client, "AUD", function(balance){
+        console.log("my AUD balance is: "+balance);
+        // calculate how many cryptos I can get from my allowance
+        var weighting = weight/100; console.log("apply weighting: " + weighting);
+        var volume = ((((balance/numberConverter)/6)/price)*weighting).toFixed(8);  //max 8 decimals, so number conversion makes it whole
+        // create buy order .. call createOrder synchronously here
+        createBuyOrder(client, crypto, price, volume, function(err, res){
+            console.log('**BUY** => response**');
+            if (err && !res.success) {
+                // console.log(err.message);
+                console.log(res.errorMessage)
+            }
+            else {
+                console.log(res);
+                // update the calcs object and save to db
+            }
+            callback(res);
+        });
+    });    
+}
+
+function getBalance(client, crypto, callback) {
+    var bal = 0;
+    client.getAccountBalances(function(err, data) {
+        if (err){
+            console.log(err.message);
+        }
+        else {
+            data.forEach(function(account) {
+                if (account.currency === crypto) {
+                    bal = account.balance;
+                }
+            });
+        }
+        callback(bal);
+    });
+}
+
+function createBuyOrder(client, crypto, price, volume, callback){
+    console.log("trying to buy "+volume+" "+crypto+" for "+price);
+    // client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_09", function(err, data)
+    // {
+    //     callback(err, data);
+    // });
+}
+
+//===============================================================================================================================
+
+// ===============SELL functions=========+++=====================================================================================
+function initiateSell(client, crypto, price, callback) {
+    getBalance(client, crypto, function(balance){
+        console.log("my "+ crypto + " balance is: "+balance);
+        var volume = balance/numberConverter;
+        // create sell order .. call createOrder synchronously here
+        createSellOrder(client, crypto, price, volume, function(err, res){
+            console.log('**SELL** => response**');
+            if (err && !res.success) {
+                // console.log(err.message);
+                console.log(res.errorMessage)
+            }
+            else {
+                console.log(res);
+                // update the calcs object and save to db
+            }
+            callback(res);
+        });
+    });    
+}
+
+function getBalance(client, crypto, callback) {
+    var bal = 0;
+    client.getAccountBalances(function(err, data) {
+        if (err){
+            console.log(err.message);
+        }
+        else {
+            data.forEach(function(account) {
+                if (account.currency === crypto) {
+                    bal = account.balance;
+                }
+            });
+        }
+        callback(bal);
+    });
+}
+
+function createSellOrder(client, crypto, price, volume, callback){
+    console.log("trying to sell "+volume+" "+crypto+" for "+price);
+    // client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "SSPL_09", function(err, data)
+    // {
+    //     callback(err, data);
+    // });
+}
+//===============================================================================================================================
+
+
+//=======main CALCULATION function==============================================================================================
+helperObj.updateCalc = function (client, crypto, min, max, latest){
     // retrieve latest calcs for crypto
     Calc.findOneAndUpdate({'instrument': crypto}, {'instrument': crypto}, {upsert:true}, function(err, myCalc){
         if (err) {
@@ -141,26 +243,44 @@ helperObj.updateCalc = function (crypto, min, max, latest){
             if (myCalc.lastAction === "buy"){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
                 if (doWeSell(myCalc, latest, profit, change, max)) {
-                    console.log(crypto + " SELL order for " + profit +"% @" + latest);
                     //update lastTradedPrice, update lastAction, average out running profit
-                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
-                    myCalc.lastAction = "sell";
-                    myCalc.trend = truncateString(myCalc.trend, 45); //reduce trend data so more samples can build up before another buy
-                    if (myCalc.runningProfit === 0) {
-                        myCalc.runningProfit = profit;
-                    } else {
-                        var avg = (myCalc.runningProfit + profit) / 2;
-                        myCalc.runningProfit = avg;
-                    }
+                    initiateSell(client, crypto, latest, function(res){
+                        if (res.success) {
+                            console.log(crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
+                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                            myCalc.lastAction = "sell";        
+                            if (profit < 0) {
+                                // we have just sold to stop loss, don't wait too long before considering to buy back in
+                                myCalc.trend = truncateString(myCalc.trend, 45);
+                            } else {
+                                // we have just sold for profit, don't rush to buy back in
+                                myCalc.trend = truncateString(myCalc.trend, 35);
+                            }
+                            if (myCalc.runningProfit === 0) {
+                                myCalc.runningProfit = profit;
+                            } else {
+                                var avg = (myCalc.runningProfit + profit) / 2;
+                                myCalc.runningProfit = avg;
+                            }
+                        } else {
+                            console.log(crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
+                        }
+                    });
                 }
             }
             else {
                 let {buy, weight} = doWeBuy (myCalc, latest, change, min);
                 if (buy) {
-                    console.log(crypto + ' BUY order: '+latest+' at '+weight+'% of investment allowance');
                     //update lastTradedPrice, update lastAction, average out running profit
-                    myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
-                    myCalc.lastAction = "buy";
+                    initiateBuy(client, crypto, latest, weight, function(res){
+                        if (res.success) {
+                            console.log(crypto + ' BUY order completed ok: '+latest+' at '+weight+'% of investment allowance');
+                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                            myCalc.lastAction = "buy";
+                        } else {
+                            console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');                            
+                        }
+                    });
                 }
             }
 

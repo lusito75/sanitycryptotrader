@@ -42,8 +42,8 @@ client.getAccountBalances(function(err, data)
 });
 
 
-function capturePriceData(btcclient, crypto, currency) {
-    btcclient.getTick(crypto, currency, function(err, data)
+function capturePriceData(btcclient, crypto) {
+    btcclient.getTick(crypto, "AUD", function(err, data)
     {
         if(!err){
             var timestamp = new Date(Date.now());
@@ -55,7 +55,7 @@ function capturePriceData(btcclient, crypto, currency) {
     });
 }
 
-function analysePriceData(crypto) {
+function analysePriceData(btcclient, crypto) {
     // retrieve last 1000 sample limit at 10 minutes sample intervals (~7 days)
     var priceArray  = [];
     var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(1000);
@@ -77,24 +77,24 @@ function analysePriceData(crypto) {
             var timestamp = new Date(Date.now());
             console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
 
-            helperCalc.updateCalc(crypto, min, max, latest);
+            helperCalc.updateCalc(btcclient, crypto, min, max, latest);
         }
     });
 }
 
-setInterval(capturePriceData.bind(null, client, "BTC", "AUD"), 60000); // 600000 (10 minutes)
-setInterval(capturePriceData.bind(null, client, "ETH", "AUD"), 60000);
-setInterval(capturePriceData.bind(null, client, "LTC", "AUD"), 60000);
-setInterval(capturePriceData.bind(null, client, "BCH", "AUD"), 60000);
-setInterval(capturePriceData.bind(null, client, "XRP", "AUD"), 60000);
-setInterval(capturePriceData.bind(null, client, "ETC", "AUD"), 60000);
+setInterval(capturePriceData.bind(null, client, "BTC"), 60000); // 600000 (10 minutes)
+setInterval(capturePriceData.bind(null, client, "ETH"), 60000);
+setInterval(capturePriceData.bind(null, client, "LTC"), 60000);
+setInterval(capturePriceData.bind(null, client, "BCH"), 60000);
+setInterval(capturePriceData.bind(null, client, "XRP"), 60000);
+setInterval(capturePriceData.bind(null, client, "ETC"), 60000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 90000); //900000 (15 minutes)
-setInterval(analysePriceData.bind(null, "ETH"), 90000);
-setInterval(analysePriceData.bind(null, "LTC"), 90000);
-setInterval(analysePriceData.bind(null, "BCH"), 90000);
-setInterval(analysePriceData.bind(null, "XRP"), 90000);
-setInterval(analysePriceData.bind(null, "ETC"), 90000);
+setInterval(analysePriceData.bind(null, client, "BTC"), 90000); //900000 (15 minutes)
+setInterval(analysePriceData.bind(null, client, "ETH"), 90000);
+setInterval(analysePriceData.bind(null, client, "LTC"), 90000);
+setInterval(analysePriceData.bind(null, client, "BCH"), 90000);
+setInterval(analysePriceData.bind(null, client, "XRP"), 90000);
+setInterval(analysePriceData.bind(null, client, "ETC"), 90000);
 
 
 // start the web server

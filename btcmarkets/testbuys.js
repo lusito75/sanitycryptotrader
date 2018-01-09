@@ -4,6 +4,28 @@ var secrets    = require('./secrets.json'),
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 var numberConverter = 100000000;    // one hundred million
 
+function initiateBuy(client, crypto, price, weight, callback) {
+    getBalance(client, "AUD", function(balance){
+        console.log("my AUD balance is: "+balance);
+        // calculate how many cryptos I can get from my allowance
+        var weighting = weight/100; console.log("apply weighting: " + weighting);
+        var volume = ((((balance/numberConverter)/6)/price)*weighting).toFixed(8);  //max 8 decimals, so number conversion makes it whole
+        // create buy order .. call createOrder synchronously here
+        createBuyOrder(client, crypto, price, volume, function(err, res){
+            console.log('**BUY** => response**');
+            if (err && !res.success) {
+                // console.log(err.message);
+                console.log(res.errorMessage)
+            }
+            else {
+                console.log(res);
+                // update the calcs object and save to db
+            }
+            callback(res);
+        });
+    });    
+}
+
 function getBalance(client, crypto, callback) {
     var bal = 0;
     client.getAccountBalances(function(err, data) {
@@ -31,21 +53,13 @@ function createBuyOrder(client, crypto, price, volume, callback){
     });
 }
 
-getBalance(client, "AUD", function(balance){
-    console.log("my AUD balance is: "+balance);
-    // calculate how many cryptos I can get from my allowance
-    var bidPrice = 3.76;
-    var volume = (((balance/numberConverter)/6)/bidPrice).toFixed(8);  //max 8 decimals, so number conversion makes it whole
-    // create buy order .. call createOrder synchronously here
-    createBuyOrder(client, "XRP", bidPrice, volume, function(err, res){
-        console.log('**BUY** => BTC response**');
-        if (err && !res.success) {
-            // console.log(err.message);
-            console.log(res.errorMessage)
-        }
-        else {
-            console.log(res);
-            // update the calcs object and save to db
-        }
-    });
+
+
+// run the order
+initiateBuy(client, "XRP", 3.53, 25, function(res){
+    if (res.success) {
+        console.log('XRP BUY order completed ok');
+    } else {
+        console.log('XRP BUY order FAILED');                            
+    }
 });

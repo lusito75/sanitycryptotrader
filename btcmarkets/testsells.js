@@ -4,16 +4,35 @@ var secrets    = require('./secrets.json'),
 var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 var numberConverter = 100000000;    // one hundred million
 
+
+function initiateSell(client, crypto, price, callback) {
+    getBalance(client, crypto, function(balance){
+        console.log("my "+ crypto + " balance is: "+balance);
+        var volume = balance/numberConverter;
+        // create sell order .. call createOrder synchronously here
+        createSellOrder(client, crypto, price, volume, function(err, res){
+            console.log('**SELL** => response**');
+            if (err && !res.success) {
+                // console.log(err.message);
+                console.log(res.errorMessage)
+            }
+            else {
+                console.log(res);
+                // update the calcs object and save to db
+            }
+            callback(res);
+        });
+    });    
+}
+
 function getBalance(client, crypto, callback) {
     var bal = 0;
     client.getAccountBalances(function(err, data) {
         if (err){
             console.log(err.message);
-            reject(err.message);
         }
         else {
-            data.forEach(function(account)
-            {
+            data.forEach(function(account) {
                 if (account.currency === crypto) {
                     bal = account.balance;
                 }
@@ -31,20 +50,12 @@ function createSellOrder(client, crypto, price, volume, callback){
     });
 }
 
-getBalance(client, "XRP", function(balance){
-    console.log("my XRP balance is: "+balance);
-    var askPrice = 3.9;
-    var volume = balance/numberConverter;
-    // create buy order .. call createOrder synchronously here
-    createSellOrder(client, "XRP", askPrice, volume, function(err, res){
-        console.log('**SELL** => BTC response**');
-        if (err && !res.success) {
-            // console.log(err.message);
-            console.log(res.errorMessage)
-        }
-        else {
-            console.log(res);
-            // update the calcs object and save to db
-        }
-    });
+
+// run the order
+initiateSell(client, "XRP", 3.67, function(res){
+    if (res.success) {
+        console.log('XRP SELL order completed ok');
+    } else {
+        console.log('XRP SELL order FAILED');                            
+    }
 });
