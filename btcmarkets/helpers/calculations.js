@@ -115,7 +115,7 @@ function initiateBuy(client, crypto, price, weight, callback) {
         console.log("my AUD balance is: "+balance);
         // calculate how many cryptos I can get from my allowance
         var weighting = weight/100; console.log("apply weighting: " + weighting);
-        var volume = ((((balance/numberConverter)/6)/price)*weighting).toFixed(8);  //max 8 decimals, so number conversion makes it whole
+        var volume = ((((balance/numberConverter)/6)/price)*weighting).toFixed(7);  //max 8 decimals, so number conversion makes it whole
         // create buy order .. call createOrder synchronously here
         createBuyOrder(client, crypto, price, volume, function(err, res){
             console.log('**BUY** => response**');
