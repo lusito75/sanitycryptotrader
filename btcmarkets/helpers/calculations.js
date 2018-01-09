@@ -120,12 +120,11 @@ function initiateBuy(client, crypto, price, weight, callback) {
         createBuyOrder(client, crypto, price, volume, function(err, res){
             console.log('**BUY** => response**');
             if (err && !res.success) {
-                // console.log(err.message);
+                console.log(err);
                 console.log(res.errorMessage)
             }
             else {
                 console.log(res);
-                // update the calcs object and save to db
             }
             callback(res);
         });
@@ -151,10 +150,10 @@ function getBalance(client, crypto, callback) {
 
 function createBuyOrder(client, crypto, price, volume, callback){
     console.log("trying to buy "+volume+" "+crypto+" for "+price);
-    // client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_09", function(err, data)
-    // {
-    //     callback(err, data);
-    // });
+    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Bid', 'Market', "SSPL_09", function(err, data)
+    {
+        callback(err, data);
+    });
 }
 
 //===============================================================================================================================
@@ -168,12 +167,11 @@ function initiateSell(client, crypto, price, callback) {
         createSellOrder(client, crypto, price, volume, function(err, res){
             console.log('**SELL** => response**');
             if (err && !res.success) {
-                // console.log(err.message);
+                console.log(err);
                 console.log(res.errorMessage)
             }
             else {
                 console.log(res);
-                // update the calcs object and save to db
             }
             callback(res);
         });
@@ -199,10 +197,10 @@ function getBalance(client, crypto, callback) {
 
 function createSellOrder(client, crypto, price, volume, callback){
     console.log("trying to sell "+volume+" "+crypto+" for "+price);
-    // client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "SSPL_09", function(err, data)
-    // {
-    //     callback(err, data);
-    // });
+    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "SSPL_09", function(err, data)
+    {
+        callback(err, data);
+    });
 }
 //===============================================================================================================================
 
@@ -265,7 +263,12 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                         } else {
                             console.log(crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
                         }
+                        myCalc.previousPrice = latest;
+                        myCalc.save();
                     });
+                } else {
+                    myCalc.previousPrice = latest;
+                    myCalc.save();
                 }
             }
             else {
@@ -280,12 +283,14 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                         } else {
                             console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');                            
                         }
+                        myCalc.previousPrice = latest;
+                        myCalc.save();
                     });
+                } else {
+                    myCalc.previousPrice = latest;
+                    myCalc.save();
                 }
             }
-
-            myCalc.previousPrice = latest;
-            myCalc.save();
         }
     });
 }
