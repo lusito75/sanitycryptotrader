@@ -34,31 +34,33 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
     var flats  = (inCalc.trend.split(".").length -1);
     // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
 
-    if (inProfit >= inCalc.targetMargin && (inCalc.tradingEnabled)) {
-        // 5% of highest maximum = myCalc.longTermMax * 0.95
-        if (inLatest / inCalc.longTermMax >= 0.95 && inCalc.percentGain <= 0.5) {
-          console.log(inCalc.instrument + " STRONG sell");
-          sell = true;
+    if (inCalc.tradingEnabled) {
+        if (inProfit >= inCalc.targetMargin) {
+            // 5% of highest maximum = myCalc.longTermMax * 0.95
+            if (inLatest / inCalc.longTermMax >= 0.95 && inCalc.percentGain <= 0.5) {
+              console.log(inCalc.instrument + " STRONG sell");
+              sell = true;
+            }
+            // 2% of recent maximum = inMin * 0.98
+            if (inLatest / inMax >= 0.98 && inCalc.percentGain <= 0.5) {
+              console.log(inCalc.instrument + " short term maximum detected .. medium sell");
+              sell = true;
+            }
+            // has the trend been mostly up and levelling off?
+            if (ups / downs >= 0.98 && ups / downs <= 1.02 && inCalc.percentGain <= 0.5) {
+              console.log(inCalc.instrument + " possible maxing out .. medium sell");
+              sell = true;
+            }
+            if (flats / (flats + ups + downs) >= 0.4) {
+              //40% no movements
+              console.log(inCalc.instrument + " very flat medium sell");
+              sell = true;
+            }
+        } else if (inProfit <= -(inCalc.targetMargin*1.25)) {
+            // stop the loss!!
+            sell = true;
+            console.log('**STOP LOSS** ' + inCalc.instrument);
         }
-        // 2% of recent maximum = inMin * 0.98
-        if (inLatest / inMax >= 0.98 && inCalc.percentGain <= 0.5) {
-          console.log(inCalc.instrument + " short term maximum detected .. medium sell");
-          sell = true;
-        }
-        // has the trend been mostly up and levelling off?
-        if (ups / downs >= 0.98 && ups / downs <= 1.02 && inCalc.percentGain <= 0.5) {
-          console.log(inCalc.instrument + " possible maxing out .. medium sell");
-          sell = true;
-        }
-        if (flats / (flats + ups + downs) >= 0.4) {
-          //40% no movements
-          console.log(inCalc.instrument + " very flat medium sell");
-          sell = true;
-        }
-    } else if (inProfit <= -(inCalc.targetMargin*1.25)) {
-        // stop the loss!!
-        sell = true;
-        console.log('**STOP LOSS** ' + inCalc.instrument);
     }
 
     if (sell) {
