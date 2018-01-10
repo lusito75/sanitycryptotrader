@@ -7,13 +7,12 @@ var numberConverter = 100000000;    // one hundred million
 
 function initiateSell(client, crypto, price, callback) {
     getBalance(client, crypto, function(balance){
-        console.log("my "+ crypto + " balance is: "+balance);
-        var volume = balance/numberConverter;
+        console.log("my "+ crypto + " balance is: "+balance/numberConverter);
         // create sell order .. call createOrder synchronously here
-        createSellOrder(client, crypto, price, volume, function(err, res){
+        createSellOrder(client, crypto, price, balance, function(err, res){
             console.log('**SELL** => response**');
             if (err && !res.success) {
-                // console.log(err.message);
+                console.log(err.message);
                 console.log(res.errorMessage)
             }
             else {
@@ -43,8 +42,8 @@ function getBalance(client, crypto, callback) {
 }
 
 function createSellOrder(client, crypto, price, volume, callback){
-    console.log("trying to sell "+volume+" "+crypto+" for "+price);
-    client.createOrder(crypto, "AUD", price * numberConverter, volume * numberConverter, 'Ask', 'Market', "SSPL_09", function(err, data)
+    console.log("trying to sell "+volume/numberConverter+" "+crypto+" for "+price);
+    client.createOrder(crypto, "AUD", price * numberConverter, volume, 'Ask', 'Market', "SSPL_09", function(err, data)
     {
         callback(err, data);
     });
