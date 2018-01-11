@@ -38,23 +38,27 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
         if (inProfit >= inCalc.targetMargin) {
             // 5% of highest maximum = myCalc.longTermMax * 0.95
             if (inLatest / inCalc.longTermMax >= 0.95 && inCalc.percentGain <= 0.5) {
-              console.log(inCalc.instrument + " STRONG sell");
+              console.log(inCalc.instrument + " long term maximum detected .. sell ok");
               sell = true;
             }
             // 2% of recent maximum = inMin * 0.98
             if (inLatest / inMax >= 0.98 && inCalc.percentGain <= 0.5) {
-              console.log(inCalc.instrument + " short term maximum detected .. medium sell");
+              console.log(inCalc.instrument + " short term maximum detected .. sell ok");
               sell = true;
             }
             // has the trend been mostly up and levelling off?
             if (ups / downs >= 0.98 && ups / downs <= 1.02 && inCalc.percentGain <= 0.5) {
-              console.log(inCalc.instrument + " possible maxing out .. medium sell");
+              console.log(inCalc.instrument + " possible maxing out .. sell ok");
               sell = true;
             }
             if (flats / (flats + ups + downs) >= 0.4) {
               //40% no movements
-              console.log(inCalc.instrument + " very flat medium sell");
+              console.log(inCalc.instrument + " trending flat .. sell ok");
               sell = true;
+            }
+            if (inProfit >= 20) {
+                console.log(inCalc.instrument + 'just TAKING A PROFIT ' + inProfit.toFixed(2) + '%');
+                sell = true;
             }
         } else if (inProfit <= -(inCalc.targetMargin*1.25)) {
             // stop the loss!!
@@ -80,25 +84,25 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
 
     // 5% of lowest minimum = myCalc.longTermMin * 1.05
     if ( (inLatest/inCalc.longTermMin <= 1.05) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' STRONG buy');
-        weight += 25;
+        console.log(inCalc.instrument + ' long term minimum detected .. buy ok');
+        weight += 50;
         buy = true;
     }
     // 2% of recent minimum = inMin * 1.02
     if ( (inLatest/inMin <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' short term minimum detected .. medium buy');
-        weight += 25;
+        console.log(inCalc.instrument + ' short term minimum detected .. buy ok');
+        weight += 50;
         buy = true;
     }
     // has the trend been mostly down and bottoming out?
     if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' possible bottoming out .. medium buy');
-        weight += 25;
+        console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
+        weight += 50;
         buy = true;
     }
     if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-        console.log(inCalc.instrument + ' very flat medium buy');
-        weight += 25;
+        console.log(inCalc.instrument + ' trending flat .. buy ok');
+        weight += 50;
         buy = true;
     }
 
@@ -106,6 +110,7 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
     if (inCalc.trend.length < 50 || !inCalc.tradingEnabled) { buy = false; }
 
     if (buy) {
+        if (weight > 100) {weight = 100;}
         console.log('**BUY** recommended (score = ' + weight + ') for ' + inCalc.instrument + ' @' + inLatest);
     }
     return {buy, weight} ;
