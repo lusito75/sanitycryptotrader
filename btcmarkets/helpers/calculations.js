@@ -60,7 +60,9 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
                 console.log(inCalc.instrument + 'just TAKING A PROFIT ' + inProfit.toFixed(2) + '%');
                 sell = true;
             }
-        } else if (inProfit <= -(inCalc.targetMargin*1.25)) {
+        }
+        //regardless if trading is enabled or not, we have a separate ability to execute stop-loss
+        if ( (inCalc.stoplossEnabled) && (inProfit <= -(inCalc.targetMargin*1.25))) {
             // stop the loss!!
             sell = true;
             console.log('**STOP LOSS** ' + inCalc.instrument);

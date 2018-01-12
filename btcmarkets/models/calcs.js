@@ -15,6 +15,7 @@ var calcSchema = new mongoose.Schema({
     instrument: String,         // crypto currency, eg "BTC", "ETH", "LTC", "BCH", "XRP"
     targetMargin: Number,       // target profit margin as a percentage
     tradingEnabled: Boolean,    // flag to enable/disable trades on this crypto 
+    stoplossEnabled: Boolean,   // flag to enable/disable stop-loss trades on this crypto 
 });
 
 calcSchema.plugin(timestamps);
