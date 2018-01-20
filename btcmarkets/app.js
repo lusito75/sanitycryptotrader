@@ -22,8 +22,13 @@ var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
 var numberConverter = 100000000;    // one hundred million
 
-var mongoUrl  = process.env.DATABASEURL || "mongodb://localhost/cryptotrader";
-mongoose.connect(mongoUrl);
+var mongoUrl     = process.env.DATABASEURL || "mongodb://localhost/cryptotrader";
+var mongoOptions = {
+    useMongoClient: true,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 500
+}
+mongoose.connect(mongoUrl, mongoOptions);
 
 
 client.getAccountBalances(function(err, data)
