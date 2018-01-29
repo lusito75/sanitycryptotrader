@@ -24,7 +24,11 @@ var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
 
 var numberConverter = 100000000;    // one hundred million
 
-var mongoUrl     = process.env.DATABASEURL || "mongodb://localhost/cryptotrader";
+var mongologin = "";
+if (secrets.mongousr && secrets.mongopwd) {
+    mongologin = secrets.mongousr + ':' + secrets.mongopwd + '@';
+}
+var mongoUrl     = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
 var mongoOptions = {
     useMongoClient: true,
     reconnectTries: Number.MAX_VALUE,
