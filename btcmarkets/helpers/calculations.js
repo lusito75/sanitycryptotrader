@@ -70,7 +70,7 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
     }
 
     if (sell) {
-        console.log('**SELL** recommended for ' + inCalc.instrument + ' @' + inLatest + ' for profit: ' + inProfit + '%');
+        console.log('**SELL** recommended for ' + inCalc.instrument + ' @' + inLatest + ' for profit: ' + inProfit.toFixed(2) + '%');
     }
 
     return sell;
@@ -260,10 +260,10 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                             myCalc.lastAction = "sell";        
                             if (profit < 0) {
                                 // we have just sold to stop loss, don't wait too long before considering to buy back in
-                                myCalc.trend = truncateString(myCalc.trend, 45);
-                            } else {
-                                // we have just sold for profit, don't rush to buy back in
                                 myCalc.trend = truncateString(myCalc.trend, 35);
+                            } else {
+                                // we have just sold for profit, don't rush to buy back in, reset trend and start again
+                                myCalc.trend = ".";
                             }
                             if (myCalc.runningProfit === 0) {
                                 myCalc.runningProfit = profit;
