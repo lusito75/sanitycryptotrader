@@ -293,12 +293,17 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     initiateBuy(client, crypto, latest, weight, function(res){
                         if (res.success) {
                             console.log(crypto + ' BUY order completed ok: '+latest+' at '+weight+'% of investment allowance');
-                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                             myCalc.lastAction = "buy";
+                            if (myCalc.recommendedAction === "averagedown") {
+                                var newavg = (myCalc.lastTradedPrice + latest) / 2;
+                                myCalc.lastTradedPrice = newavg; // create a new price average
+                                myCalc.recommendedAction = ""; //reset averagedown flag after buy
+                            } else {
+                                myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                            }
                         } else {
                             console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');                            
                         }
-                        myCalc.recommendedAction = ""; //reset recommended action after a buy
                         myCalc.previousPrice = latest;
                         myCalc.save();
                     });
