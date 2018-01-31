@@ -61,12 +61,12 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
                 sell = true;
             }
         }
-        //regardless if trading is enabled or not, we have a separate ability to execute stop-loss
-        if ( (inCalc.stoplossEnabled) && (inProfit <= -(inCalc.targetMargin*1.25))) {
-            // stop the loss!!
-            sell = true;
-            console.log('**STOP LOSS** ' + inCalc.instrument);
-        }
+    }
+    //regardless if trading is enabled or not, we have a separate ability to execute stop-loss
+    if ( (inCalc.stoplossEnabled) && (inProfit <= -(inCalc.targetMargin*1.25))) {
+        // stop the loss!!
+        sell = true;
+        console.log('**STOP LOSS** ' + inCalc.instrument);
     }
 
     if (sell) {
@@ -256,7 +256,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     initiateSell(client, crypto, latest, function(res){
                         if (res.success) {
                             console.log(crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
-                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
+                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is! TODO
                             myCalc.lastAction = "sell";        
                             if (profit < 0) {
                                 // we have just sold to stop loss, don't wait too long before considering to buy back in
@@ -278,11 +278,15 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                         myCalc.save();
                     });
                 } else {
+                    if ( (myCalc.averagedownEnabled) && (profit < -(myCalc.targetMargin*2)) ) {
+                        console.log(crypto + ' profit is WAY down ('+ profit.toFixed(2) + '%), lets consider some Dollar Cost Averaging');
+                        myCalc.recommendedAction = "averagedown";
+                    }
                     myCalc.previousPrice = latest;
                     myCalc.save();
                 }
             }
-            else {
+            else if ( (myCalc.lastAction === "sell") || (myCalc.recommendedAction === "averagedown") ) {
                 let {buy, weight} = doWeBuy (myCalc, latest, change, min);
                 if (buy) {
                     //update lastTradedPrice, update lastAction, average out running profit
@@ -294,6 +298,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                         } else {
                             console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');                            
                         }
+                        myCalc.recommendedAction = ""; //reset recommended action after a buy
                         myCalc.previousPrice = latest;
                         myCalc.save();
                     });
