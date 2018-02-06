@@ -249,7 +249,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
             // whats the trend?
             myCalc.trend = buildTrend(myCalc.trend, change);
 
-            if (myCalc.lastAction === "buy"){
+            if ( (myCalc.lastAction === "buy") && (myCalc.recommendedAction !== "averagedown") ){
                 var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
                 if (doWeSell(myCalc, latest, profit, change, max)) {
                     //update lastTradedPrice, update lastAction, average out running profit

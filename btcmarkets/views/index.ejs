@@ -8,7 +8,7 @@
                             <label><input class="form-control" type="text" name="instrument" value="<%= calc.instrument %>" readonly></label>
                             <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calc.previousPrice %>" readonly></label>
                             <label>Last Trade / Avg Profit<input class="form-control" type="text" name="lasttradedprice" 
-                                value="<%= calc.lastTradedPrice %> / <%= calc.lastAction %> / <%= calc.runningProfit.toFixed(1) %>%" readonly>
+                                value="<%= calc.lastTradedPrice.toFixed(2) %> / <%= calc.lastAction %> / <%= calc.runningProfit.toFixed(1) %>%" readonly>
                             </label>
                             <p>
                                 <a href="/calcs/<%= calc._id %>/edit" class="btn btn-primary">Configure Robot</a>
