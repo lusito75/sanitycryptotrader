@@ -17,6 +17,7 @@ db.calcs.update({}, {$set: {targetMargin:10, tradingEnabled:true}}, {multi:true}
 db.calcs.update({}, {$set: {lastAction:"", lastTradedPrice:0}}, {multi:true})
 db.calcs.update({}, {$set: {stoplossEnabled:false}}, {multi:true})
 db.calcs.update({}, {$set: {averagedownEnabled:false, recommendedAction: ""}}, {multi:true})
+db.calcs.update({}, {$set: {pumpAndDumpMarket:false}}, {multi:true})
 
 
 // set TTL on ticks collection

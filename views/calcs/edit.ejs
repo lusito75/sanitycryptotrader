@@ -41,6 +41,12 @@
                             <input type="checkbox" name="calc[averagedownEnabled]" <%= calc.averagedownEnabled ? "checked" : "" %>>Dollar Cost Averaging (DCA) Enabled
                         </label>
                     </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="hidden" name="calc[pumpAndDumpMarket]" value="false">
+                            <input type="checkbox" name="calc[pumpAndDumpMarket]" <%= calc.pumpAndDumpMarket ? "checked" : "" %>>Are we in a Pump'n Dump market? (market rises met by similar falls)
+                        </label>
+                    </div>
 
 
                     <div class="form-group">

@@ -17,6 +17,7 @@ var calcSchema = new mongoose.Schema({
     tradingEnabled: Boolean,    // flag to enable/disable trades on this crypto 
     stoplossEnabled: Boolean,   // flag to enable/disable stop-loss trades on this crypto
     averagedownEnabled: Boolean,// flag to enable/disable Dollar Cost Average buying
+    pumpAndDumpMarket: Boolean, // flag to signify a "pump'n dump" market is in effect, and buy back in only if we have come back down to earlier lows
 });
 
 calcSchema.plugin(timestamps);

@@ -96,16 +96,19 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         weight += 50;
         buy = true;
     }
-    // has the trend been mostly down and bottoming out?
-    if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
-        console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
-        weight += 50;
-        buy = true;
-    }
-    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-        console.log(inCalc.instrument + ' trending flat .. buy ok');
-        weight += 50;
-        buy = true;
+
+    if (!inCalc.pumpAndDumpMarket) {
+        // has the trend been mostly down and bottoming out?
+        if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
+            console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
+            weight += 50;
+            buy = true;
+        }
+        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
+            console.log(inCalc.instrument + ' trending flat .. buy ok');
+            weight += 50;
+            buy = true;
+        }
     }
 
     // if we don't have enough samples or if trading is disabled... no buying allowed
