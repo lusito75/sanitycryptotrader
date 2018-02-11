@@ -97,13 +97,14 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         buy = true;
     }
 
+    // has the trend been mostly down and bottoming out?
+    if ((downs/ups > 1.0) && (downs/ups <= 1.05) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
+        console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
+        weight += 50;
+        buy = true;
+    }
+    // if its a roller-coaster market, lets not buy back in just because its been a bit flat for a while
     if (!inCalc.pumpAndDumpMarket) {
-        // has the trend been mostly down and bottoming out?
-        if ((downs/ups >= 0.98) && (downs/ups <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
-            console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
-            weight += 50;
-            buy = true;
-        }
         if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
             console.log(inCalc.instrument + ' trending flat .. buy ok');
             weight += 50;
