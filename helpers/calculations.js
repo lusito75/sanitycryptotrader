@@ -77,38 +77,46 @@ function doWeSell (inCalc, inLatest, inProfit, inChange, inMax) {
 }
 
 function doWeBuy (inCalc, inLatest, inChange, inMin) {
-    var weight = 0;
-    var buy    = false;
-    var ups    = (inCalc.trend.match(/u/g) || []).length;
-    var downs  = (inCalc.trend.match(/d/g) || []).length;
-    var flats  = (inCalc.trend.split(".").length -1);
+    var weight      = 0;
+    var buy         = false;
+    var recentMin   = false;
+    var longtermMin = false;
+    var ups         = (inCalc.trend.match(/u/g) || []).length;
+    var downs       = (inCalc.trend.match(/d/g) || []).length;
+    var flats       = (inCalc.trend.split(".").length -1);
     // console.log(inCalc.instrument + ' UPS: ' + ups + ' DOWNS: ' + downs + ' FLATS: ' + flats);
 
     // 5% of lowest minimum = myCalc.longTermMin * 1.05
     if ( (inLatest/inCalc.longTermMin <= 1.05) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' long term minimum detected .. buy ok');
+        longtermMin = true;
         weight += 50;
         buy = true;
     }
     // 2% of recent minimum = inMin * 1.02
     if ( (inLatest/inMin <= 1.02) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' short term minimum detected .. buy ok');
+        recentMin = true;
         weight += 50;
         buy = true;
     }
-
     // has the trend been mostly down and bottoming out?
     if ((downs/ups > 1.0) && (downs/ups <= 1.05) && (inCalc.percentGain >= -0.5) && (inCalc.percentGain <= 0.5)) {
         console.log(inCalc.instrument + ' possible bottoming out .. buy ok');
         weight += 50;
         buy = true;
     }
-    // if its a roller-coaster market, lets not buy back in just because its been a bit flat for a while
-    if (!inCalc.pumpAndDumpMarket) {
-        if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
-            console.log(inCalc.instrument + ' trending flat .. buy ok');
-            weight += 50;
-            buy = true;
+    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
+        console.log(inCalc.instrument + ' trending flat .. buy ok');
+        weight += 50;
+        buy = true;
+    }
+    
+    // if its a roller-coaster market, lets not buy back in unless we have returned to recent minimums
+    if (inCalc.pumpAndDumpMarket && buy) {
+        if ( !(recentMin || longtermMin) ) {
+            console.log(inCalc.instrument + ' buy back blocked - wary of roller coaster conditions');
+            buy = false;
         }
     }
 
