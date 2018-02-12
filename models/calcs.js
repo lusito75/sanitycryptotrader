@@ -5,6 +5,8 @@ var timestamps = require('mongoose-timestamp');
 var calcSchema = new mongoose.Schema({
     longTermMin: Number,        // all time minimum value since records began
     longTermMax: Number,        // all time maximum value since records began
+    shortTermMin: Number,        // recent minimum value since records began
+    shortTermMax: Number,        // recent maximum value since records began
     trend: String,              // "d" (down) "u" (up) "." steady
     lastAction: String,         // "buy" or "sell"
     recommendedAction: String,  // "averagedown" to prompt a check if we should buy more

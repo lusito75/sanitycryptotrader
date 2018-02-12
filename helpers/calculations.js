@@ -257,6 +257,8 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
             else if (max > myCalc.longTermMax){
                 myCalc.longTermMax = max;
             }
+            myCalc.shortTermMin = min;
+            myCalc.shortTermMax = max;
 
             // whats the trend?
             myCalc.trend = buildTrend(myCalc.trend, change);
