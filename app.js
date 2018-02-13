@@ -67,9 +67,9 @@ function capturePriceData(btcclient, crypto) {
 }
 
 function analysePriceData(btcclient, crypto) {
-    // retrieve last 1000 sample limit at 1.5 minutes sample intervals (~1 day)
+    // retrieve last 2000 samplea at 1.5 minutes sample intervals (~2 days)
     var priceArray  = [];
-    var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(1000);
+    var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(2000);
 
     queryPrices.exec(function (err, latestTicks){
         if (err) {
