@@ -2,6 +2,7 @@ var express  = require('express');
 var router   = express.Router();
 
 var Calc    = require('../models/calcs');
+var Equity  = require('../models/equities');
 
 router.get("/", function(req, res){
     // res.send("Crypto Trader landing page");
@@ -9,8 +10,13 @@ router.get("/", function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            var latestUpdate = allCalcs[0].updatedAt;
-            res.render("index", {calcs: allCalcs, updated: latestUpdate});
+            Equity.find().sort({'createdAt': -1}).limit(1).find( function (err, latestEquity) {
+                if (err) {
+                    console.log(err.message);
+                } else {
+                    res.render("index", {calcs: allCalcs, updated: allCalcs[0].updatedAt, latestVals: latestEquity[0]});
+                }
+            });
         }
     });
 });

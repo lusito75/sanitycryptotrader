@@ -327,6 +327,8 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                 }
             }
         }
+        myCalc.previousPrice = latest;
+        myCalc.save();
     });
 }
 
