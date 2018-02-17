@@ -1,5 +1,7 @@
 // helper object
 var Calc   = require('../models/calcs');
+// email sender function
+const sendEmail = require('../helpers/send-email');
 
 var helperObj = {};
 
@@ -271,7 +273,8 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                         if (res.success) {
                             console.log(crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
                             myCalc.lastTradedPrice = latest; //or rather what the actual sale price is! TODO
-                            myCalc.lastAction = "sell";        
+                            myCalc.lastAction = "sell";
+                            sendEmail('CryptoTrader: **SELL OK** notification', crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
                             if (profit < 0) {
                                 // we have just sold to stop loss, don't wait too long before considering to buy back in
                                 myCalc.trend = truncateString(myCalc.trend, 35);
@@ -287,6 +290,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                             }
                         } else {
                             console.log(crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
+                            sendEmail('CryptoTrader: **SELL NOK** notification', crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
                         }
                         myCalc.previousPrice = latest;
                         myCalc.save();
@@ -307,6 +311,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     initiateBuy(client, crypto, latest, weight, function(res){
                         if (res.success) {
                             console.log(crypto + ' BUY order completed ok: '+latest+' at '+weight+'% of investment allowance');
+                            sendEmail('CryptoTrader: **BUY OK** notification', crypto + ' BUY order completed ok: '+latest+' at '+weight+'% of investment allowance');
                             myCalc.lastAction = "buy";
                             if (myCalc.recommendedAction === "averagedown") {
                                 var newavg = (myCalc.lastTradedPrice + latest) / 2;
@@ -316,7 +321,8 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                                 myCalc.lastTradedPrice = latest; //or rather what the actual sale price is!
                             }
                         } else {
-                            console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');                            
+                            console.log(crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');
+                            sendEmail('CryptoTrader: **BUY NOK** notification', crypto + ' BUY order FAILED: '+latest+' at '+weight+'% of investment allowance');
                         }
                         myCalc.previousPrice = latest;
                         myCalc.save();
