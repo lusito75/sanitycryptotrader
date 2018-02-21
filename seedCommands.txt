@@ -22,4 +22,5 @@ db.calcs.update({}, {$set: {shortTermMin:0, shortTermMax:0}}, {multi:true})
 
 
 // set TTL on ticks collection
-db.ticks.createIndex( { "timestamp": 1 }, { expireAfterSeconds: 7776000 } )
+db.ticks.createIndex( { "timestamp": 1 }, { expireAfterSeconds: 7776000 } )    //90 days
+db.equities.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 5184000 } ) //60 days

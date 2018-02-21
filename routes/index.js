@@ -10,11 +10,11 @@ router.get("/", function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            Equity.find().sort({'createdAt': -1}).limit(1).find( function (err, latestEquity) {
+            Equity.find().sort({'createdAt': -1}).limit(500).find( function (err, latestEquities) {
                 if (err) {
                     console.log(err.message);
                 } else {
-                    res.render("index", {calcs: allCalcs, updated: allCalcs[0].updatedAt, latestVals: latestEquity[0]});
+                    res.render("index", {calcs: allCalcs, updated: allCalcs[0].updatedAt, latestVals: latestEquities[0], equities: latestEquities});
                 }
             });
         }

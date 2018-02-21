@@ -4,6 +4,7 @@
     <div class="row">
         <h3 style="text-align:center"><%= calc.instrument %></h3>
         <h4 style="text-align:center">currently $<%= calc.previousPrice %>, average change rate: <%= calc.percentGain.toFixed(1) %>%</h4>
+        <p style="text-align:center">recent low $<%= calc.shortTermMin %>, recent high $<%= calc.shortTermMax %></p>
             <div style="width:30%; margin:25px auto;">
                 <form action="/calcs/<%= calc._id %>?_method=PUT" method="POST">
                     <div class="form-group">
@@ -19,9 +20,12 @@
                         <label>Running Profit
                             <input class="form-control" type="number" name="calc[runningProfit]" value="<%= calc.runningProfit %>">
                         </label>
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="calc[trend]" value="<%= calc.trend %>">
+                        <label for="RecAction">Recommended Action</label>
+                        <select class="form-control" name="calc[recommendedAction]" value="<%= calc.recommendedAction %>">
+                            <option value="">No Action</option>
+                            <option value="averagedown">Buy to Average Down</option>
+                            <option value="sellnow">Sell NOW!</option>
+                        </select>
                     </div>
                     <div class="checkbox">
                         <label>
