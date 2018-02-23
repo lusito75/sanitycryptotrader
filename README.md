@@ -10,19 +10,20 @@
 
 * Clone
 * configure a `secrets.json` file:
-~~~~
-{
-    "api_key"    : "",
-    "api_secret" : "",
-    "mongousr"   : "",
-    "mongopwd"   : "",
-    "mongosvr"   : "",
-    "mongoprt"   : "",
-    "mongodb"    : "",
-    "emailuser"  : "",
-    "emailpass"  : ""
- }
- ~~~~
+<pre>
+    {
+        "api_key"    : 'your api key provided by your BTC markets account',
+        "api_secret" : 'your api secret provided by your BTC markets account',
+        "mongousr"   : "",
+        "mongopwd"   : "",
+        "mongosvr"   : "",
+        "mongoprt"   : "",
+        "mongodb"    : "",
+        "emailuser"  : "",
+        "emailpass"  : ""
+    }
+</pre>
+
 * `npm install` followed by `nodemon` or `npm start`
 
 ### Features ###
