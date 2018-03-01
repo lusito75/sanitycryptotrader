@@ -20,6 +20,14 @@ var calcSchema = new mongoose.Schema({
     stoplossEnabled: Boolean,   // flag to enable/disable stop-loss trades on this crypto
     averagedownEnabled: Boolean,// flag to enable/disable Dollar Cost Average buying
     pumpAndDumpMarket: Boolean, // flag to signify a "pump'n dump" market is in effect, and buy back in only if we have come back down to earlier lows
+    owner: {
+        id: 
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        username: String
+    },
 });
 
 calcSchema.plugin(timestamps);

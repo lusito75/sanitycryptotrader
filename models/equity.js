@@ -11,6 +11,14 @@ var equitySchema = new mongoose.Schema({
     XRPbal: Number, XRPval: Number,
     ETCbal: Number, ETCval: Number,
     TOTval: Number,
+    owner: {
+        id: 
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        username: String
+    },
 });
 
 equitySchema.plugin(timestamps);

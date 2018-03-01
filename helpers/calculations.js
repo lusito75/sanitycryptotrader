@@ -1,5 +1,5 @@
 // helper object
-var Calc   = require('../models/calcs');
+var Calc   = require('../models/calc');
 // email sender function
 const sendEmail = require('../helpers/send-email');
 

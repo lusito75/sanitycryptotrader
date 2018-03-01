@@ -1,11 +1,15 @@
-var secrets    = require('./secrets.json'),
-    BTCMarkets = require('btc-markets'),
-    mongoose   = require('mongoose'),
+var secrets        = require('./secrets.json'),
+    BTCMarkets     = require('btc-markets'),
+    mongoose       = require('mongoose'),
     methodOverride = require('method-override'),
-    Tick       = require('./models/ticks'),
-    Calc       = require('./models/calcs'),
-    Equity     = require('./models/equities'),
-    helperCalc = require('./helpers/calculations');
+    LocalStrategy  = require('passport-local'),
+    passport       = require('passport'),
+    flash          = require('connect-flash'),
+    User           = require('./models/user'),
+    Tick           = require('./models/tick'),
+    Calc           = require('./models/calc'),
+    Equity         = require('./models/equity'),
+    helperCalc     = require('./helpers/calculations');
 
 // web server stuff
 var express       = require('express'),
@@ -15,7 +19,23 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
+
+// PASSPORT CONFIG
+app.use(require('express-session')({
+    secret: "sspl is gonna get shit done",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(function(req, res, next){
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     res.locals.currentUser = req.user;
     next();
 });
@@ -29,7 +49,7 @@ var mongologin = "";
 if (secrets.mongousr && secrets.mongopwd) {
     mongologin = secrets.mongousr + ':' + secrets.mongopwd + '@';
 }
-var mongoUrl     = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
+var mongoUrl = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
 console.log('connecting to mongodb: '+mongoUrl);
 var mongoOptions = {
     useMongoClient: true,
