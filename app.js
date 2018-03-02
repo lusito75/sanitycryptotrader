@@ -41,9 +41,12 @@ app.use(function(req, res, next){
 });
     
 
-var client = new BTCMarkets(secrets.api_key, secrets.api_secret);
-
-var numberConverter = 100000000;    // one hundred million
+global.numberConverter = 100000000;    // one hundred million - BTC number converter to eliminate decimal values
+global.activeUsername = "";
+global.mastermode = false;
+global.btcclient = null;
+global.mysecret = "";
+global.mykey ="";
 
 var mongologin = "";
 if (secrets.mongousr && secrets.mongopwd) {
@@ -70,44 +73,71 @@ var equityData = {
     TOTval: 0,
 }
 
+function setUpBtcClient() {
+    if (activeUsername && (btcclient == null)) {
+        User.findOne({username: activeUsername}, function(err, myUser) {
+            if (err) {
+                console.log(err.message);
+            } else {
+                mysecret  = myUser.api_secret;
+                mykey     = myUser.api_key;
+                btcclient = new BTCMarkets(myUser.api_key, myUser.api_secret);
+                console.log(activeUsername + ' is logged in, and new BTC client connection established');
+            }
+        });
+    } else if (mysecret && mykey && (btcclient == null)) {
+        console.log('user logged off, but this instance will run with previous credentials from last login');
+        btcclient = new BTCMarkets(mykey, mysecret);
+    } else if (secrets.api_key && secrets.api_secret && (btcclient == null)) {
+        console.log('master instance - setup BTC client with Sanity Software default params')
+        mastermode = true;
+        btcclient = new BTCMarkets(secrets.api_key, secrets.api_secret);
+    }
+}
 
 // function to capture price ticks from BTCmarkets
-function capturePriceData(btcclient, crypto) {
-    btcclient.getTick(crypto, "AUD", function(err, data)
-    {
-        if(!err){
-            var timestamp = new Date(Date.now());
-            console.log(crypto + ' tick captured ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
-            switch (data.instrument) {
-                case "BTC":
-                    equityData.BTCval = (equityData.BTCbal * data.lastPrice) / numberConverter;                            
-                    break;                    
-                case "ETH":
-                    equityData.ETHval = (equityData.ETHbal * data.lastPrice) / numberConverter;                            
-                    break;
-                case "LTC":
-                    equityData.LTCval = (equityData.LTCbal * data.lastPrice) / numberConverter;                            
-                    break;
-                case "BCH":
-                    equityData.BCHval = (equityData.BCHbal * data.lastPrice) / numberConverter;                            
-                    break;
-                case "XRP":
-                    equityData.XRPval = (equityData.XRPbal * data.lastPrice) / numberConverter;                            
-                    break;
-                case "ETC":
-                    equityData.ETCval = (equityData.ETCbal * data.lastPrice) / numberConverter;                            
-                    break;
-            }
-            equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval + equityData.LTCval + equityData.BCHval + equityData.XRPval + equityData.ETCval;
-            Tick.create(data, function(err, newData){
-                if (err) { console.log(err.message)}
-            });
-        } else { console.log(err.message); }
-    });
+function capturePriceData(crypto) {
+    setUpBtcClient();
+    if (btcclient == null) {
+        console.log('no BTC client setup - waiting to capture prices ...');
+    }
+    else {
+        btcclient.getTick(crypto, "AUD", function(err, data) {
+            if(!err){
+                var timestamp = new Date(Date.now());
+                console.log(crypto + ' tick captured ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
+                switch (data.instrument) {
+                    case "BTC":
+                        equityData.BTCval = (equityData.BTCbal * data.lastPrice) / numberConverter;                            
+                        break;                    
+                    case "ETH":
+                        equityData.ETHval = (equityData.ETHbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "LTC":
+                        equityData.LTCval = (equityData.LTCbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "BCH":
+                        equityData.BCHval = (equityData.BCHbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "XRP":
+                        equityData.XRPval = (equityData.XRPbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "ETC":
+                        equityData.ETCval = (equityData.ETCbal * data.lastPrice) / numberConverter;                            
+                        break;
+                }
+                equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval + equityData.LTCval + equityData.BCHval + equityData.XRPval + equityData.ETCval;
+                Tick.create(data, function(err, newData){
+                    if (err) { console.log(err.message)}
+                });
+            } else { console.log(err.message); }
+        });
+    }
 }
 
 // function to update trade calculations based on recent price data
-function analysePriceData(btcclient, crypto) {
+function analysePriceData(crypto) {
+    setUpBtcClient();
     // retrieve last 2000 samplea at 1.5 minutes sample intervals (~2 days)
     var priceArray  = [];
     var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(2000);
@@ -129,78 +159,87 @@ function analysePriceData(btcclient, crypto) {
             var timestamp = new Date(Date.now());
             console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
 
-            helperCalc.updateCalc(btcclient, crypto, min, max, latest);
+            if (btcclient != null) {
+                helperCalc.updateCalc(btcclient, crypto, min, max, latest);
+            } else { console.log('no BTC client setup - waiting to update calculations') }
         }
     });
 }
 
 // gets all account balances, store in global equityData var
 // push this equity amount into db model "Equity"
-function updateEquityData(btcclient) {
+function updateEquityData() {
+    setUpBtcClient();
     var crypto = "";
-    // get all account balances
-    btcclient.getAccountBalances(function(err, data) {
-        if (err) {
-            console.log(err.message);
-        }
-        else {
-            data.forEach(function(account) {
-                console.log(account.currency + ' balance ' + account.balance / numberConverter);
-                crypto = account.currency;
-                switch (crypto) {
-                    case "BTC":
-                        equityData.BTCbal = account.balance;                            
-                        break;                    
-                    case "ETH":
-                        equityData.ETHbal = account.balance;                            
-                        break;
-                    case "LTC":
-                        equityData.LTCbal = account.balance;                            
-                        break;
-                    case "BCH":
-                        equityData.BCHbal = account.balance;                            
-                        break;
-                    case "XRP":
-                        equityData.XRPbal = account.balance;                            
-                        break;
-                    case "ETC":
-                        equityData.ETCbal = account.balance;                            
-                        break;
-                    case "AUD":
-                        equityData.AUD = account.balance / numberConverter;
-                        break;
-                    }
-            });  // close of forEach loop
-            if (equityData.TOTval) {
-                console.log('TOTAL portfolio Value: $' + equityData.TOTval.toFixed(2));
-                Equity.create(equityData, function(err, newData){
-                    if (err) { console.log(err.message)}
-                });
-            }            
-        }
-    }); // close of account GET call
+    if (btcclient == null) {
+        console.log('no BTC client setup - waiting to update equity ...');
+    }
+    else {
+            // get all account balances
+        btcclient.getAccountBalances(function(err, data) {
+            if (err) {
+                console.log(err.message);
+            }
+            else {
+                data.forEach(function(account) {
+                    console.log(account.currency + ' balance ' + account.balance / numberConverter);
+                    crypto = account.currency;
+                    switch (crypto) {
+                        case "BTC":
+                            equityData.BTCbal = account.balance;                            
+                            break;                    
+                        case "ETH":
+                            equityData.ETHbal = account.balance;                            
+                            break;
+                        case "LTC":
+                            equityData.LTCbal = account.balance;                            
+                            break;
+                        case "BCH":
+                            equityData.BCHbal = account.balance;                            
+                            break;
+                        case "XRP":
+                            equityData.XRPbal = account.balance;                            
+                            break;
+                        case "ETC":
+                            equityData.ETCbal = account.balance;                            
+                            break;
+                        case "AUD":
+                            equityData.AUD = account.balance / numberConverter;
+                            break;
+                        }
+                });  // close of forEach loop
+                if (equityData.TOTval) {
+                    console.log('TOTAL portfolio Value: $' + equityData.TOTval.toFixed(2));
+                    Equity.create(equityData, function(err, newData){
+                        if (err) { console.log(err.message)}
+                    });
+                }            
+            }
+        }); // close of account GET call
+    }
 }
 
 
 
-setInterval(capturePriceData.bind(null, client, "BTC"), 60000); // 60000 (1 minute / 60s)
-setInterval(capturePriceData.bind(null, client, "ETH"), 60000);
-setInterval(capturePriceData.bind(null, client, "LTC"), 60000);
-setInterval(capturePriceData.bind(null, client, "BCH"), 60000);
-setInterval(capturePriceData.bind(null, client, "XRP"), 60000);
-setInterval(capturePriceData.bind(null, client, "ETC"), 60000);
+setInterval(capturePriceData.bind(null, "BTC"), 60000); // 60000 (1 minute / 60s)
+setInterval(capturePriceData.bind(null, "ETH"), 60000);
+setInterval(capturePriceData.bind(null, "LTC"), 60000);
+setInterval(capturePriceData.bind(null, "BCH"), 60000);
+setInterval(capturePriceData.bind(null, "XRP"), 60000);
+setInterval(capturePriceData.bind(null, "ETC"), 60000);
 
-setInterval(analysePriceData.bind(null, client, "BTC"), 90000); //90000 (1.5 minute / 90s)
-setInterval(analysePriceData.bind(null, client, "ETH"), 90000);
-setInterval(analysePriceData.bind(null, client, "LTC"), 90000);
-setInterval(analysePriceData.bind(null, client, "BCH"), 90000);
-setInterval(analysePriceData.bind(null, client, "XRP"), 90000);
-setInterval(analysePriceData.bind(null, client, "ETC"), 90000);
+setInterval(analysePriceData.bind(null, "BTC"), 90000); //90000 (1.5 minute / 90s)
+setInterval(analysePriceData.bind(null, "ETH"), 90000);
+setInterval(analysePriceData.bind(null, "LTC"), 90000);
+setInterval(analysePriceData.bind(null, "BCH"), 90000);
+setInterval(analysePriceData.bind(null, "XRP"), 90000);
+setInterval(analysePriceData.bind(null, "ETC"), 90000);
 
 //update equity data
-setInterval(updateEquityData.bind(null, client), 21600000); //21600000 (6 hours)
+setInterval(updateEquityData.bind(null), 216000); //21600000 (6 hours)
 
-updateEquityData
+setUpBtcClient();
+
 // start the web server
 var indexRoutes = require('./routes/index');
 

@@ -1,6 +1,7 @@
 var express  = require('express');
 var router   = express.Router();
 var passport = require('passport');
+var middleware  = require('../middleware/mdwindex');
 
 var Calc    = require('../models/calc');
 var Equity  = require('../models/equity');
@@ -23,7 +24,7 @@ router.get("/", function(req, res){
     });
 });
 
-// Authenticared route to view active portfolio
+// Authenticated route to view active portfolio
 router.get("/portfolio", function(req, res){
     res.render("portfolio");
 });
@@ -79,44 +80,61 @@ router.get("/login", function(req,res){
 });
 
 //handle login logic
-router.post("/login", passport.authenticate("local", 
-    {
-        successRedirect: "/portfolio",
-        failureRedirect: "/login"
-    }), function(req, res){
+router.post("/login", function(req, res, next) {
+    passport.authenticate("local", function(err, user, info) {
+        if (err) { return next(err); }
+        if (!user) {
+            req.flash("error", "Login failed - try again");
+            return res.redirect("/login");
+        }
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            activeUsername = user.username;
+            btcclient = null; //force a new client to be setup
+            req.flash("success", "Welcome back " + user.username);
+            return res.redirect("/portfolio");
+        });
+    }) (req, res, next);
 });
 
 // logout route
 router.get("/logout", function(req, res){
     req.logout();
+    // activeUsername = "";
+    // btcclient = null;
     req.flash("success", "Logged you out!");
     res.redirect("/");
 });
 
-// show change password form
-// router.get("/changepwd", middleware.isLoggedIn, function(req, res){
-//     res.render("changepwd");
-// });
+// show edit user form
+router.get("/edituser", middleware.isLoggedIn, function(req, res){
+    res.render("edituser");
+});
 
-// handle password change
-// router.post("/changepwd", middleware.isLoggedIn, function(req, res){
-//     console.log(req.user);
-//     User.findById(req.user.id, function(err, myUser){
-//         if (err) {
-//             req.flash("error", err.message);
-//             res.redirect("/wavetypes");
-//         }
-//         myUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err, myUser){
-//             if (err) {
-//                 req.flash("error", err.message);
-//                 res.redirect("/wavetypes");
-//             } else {
-//                 req.flash("success", "Password changed successfully for " + myUser.username);
-//                 res.redirect("/wavetypes");
-//             }
-//         });
-//     });
-// });
+// handle user update
+router.post("/edituser", middleware.isLoggedIn, function(req, res){
+    User.findByIdAndUpdate(req.user.id, {api_key: req.body.api_key, api_secret: req.body.api_secret}, function(err, myUser){
+        if (err) {
+            req.flash("error", err.message);
+            res.redirect("/portfolio");
+        }
+        // only update password if both fields filled out on form
+        if (req.body.oldPassword && req.body.newPassword) {
+            myUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err, myUser){
+                if (err) {
+                    req.flash("error", err.message);
+                    res.redirect("/portfolio");
+                } else {
+                    req.flash("success", "User profile and password updated successfully for " + myUser.username);
+                    res.redirect("/portfolio");
+                }
+            });
+        } else {
+            req.flash("success", "User profile updated successfully for " + myUser.username);
+            res.redirect("/portfolio");
+        }
+    });
+});
 
 
 

@@ -5,9 +5,6 @@ const sendEmail = require('../helpers/send-email');
 
 var helperObj = {};
 
-// BTC client number converter
-var numberConverter = 100000000;    // one hundred million
-
 
 function truncateString (inputStr, strlength) {
     if (inputStr.length > strlength) {

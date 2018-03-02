@@ -1,0 +1,33 @@
+<% include ./partials/header %>
+
+<div class="container">
+    <div class="row">
+        <h1 style="text-align:center">Edit User Details</h1>
+        <div style="width:30%; margin:25px auto;">
+            <form action="/edituser" method="POST">
+                <div class="form-group">
+                    <input type="text" name="username" placeholder="username" value="<%= currentUser.username %>" readonly>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="api_key" placeholder="API Key" value="<%= currentUser.api_key %>">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="api_secret" placeholder="API Secret" value="<%= currentUser.api_secret %>">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="oldPassword" placeholder="old password">
+                </div>
+                <div class="form-group">
+                    <input type="password" name="newPassword" placeholder="new password">
+                </div>
+                <div class="form-group">
+                    <button>Update</button>
+                </div>
+            </form>
+            <a href="/portfolio">Go Back</a>
+        </div>
+    </div>
+</div>
+
+
+<% include ./partials/footer %>
