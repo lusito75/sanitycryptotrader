@@ -127,9 +127,12 @@ function capturePriceData(crypto) {
                         break;
                 }
                 equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval + equityData.LTCval + equityData.BCHval + equityData.XRPval + equityData.ETCval;
-                Tick.create(data, function(err, newData){
-                    if (err) { console.log(err.message)}
-                });
+                if ( (secrets.api_key && secrets.api_secret) || (secrets.mongosvr === "localhost") ) {
+                    // only create a new price tick in db if master or local instance
+                    Tick.create(data, function(err, newData){
+                        if (err) { console.log(err.message)}
+                    });
+                }
             } else { console.log(err.message); }
         });
     }
