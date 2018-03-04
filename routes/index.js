@@ -111,8 +111,8 @@ router.get("/edituser", middleware.isLoggedIn, function(req, res){
     res.render("edituser");
 });
 
-// handle user update
-router.post("/edituser", middleware.isLoggedIn, function(req, res){
+// edit user
+router.put("/edituser", middleware.isLoggedIn, function(req, res){
     User.findByIdAndUpdate(req.user.id, {api_key: req.body.api_key, api_secret: req.body.api_secret}, function(err, myUser){
         if (err) {
             req.flash("error", err.message);

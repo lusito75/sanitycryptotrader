@@ -4,7 +4,7 @@
     <div class="row">
         <h1 style="text-align:center">Edit User Details</h1>
         <div style="width:30%; margin:25px auto;">
-            <form action="/edituser" method="POST">
+            <form action="/edituser?_method=PUT" method="POST">
                 <div class="form-group">
                     <input type="text" name="username" placeholder="username" value="<%= currentUser.username %>" readonly>
                 </div>
