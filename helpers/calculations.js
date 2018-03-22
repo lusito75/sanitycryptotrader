@@ -5,7 +5,6 @@ const sendEmail = require('../helpers/send-email');
 
 var helperObj = {};
 
-
 function truncateString (inputStr, strlength) {
     if (inputStr.length > strlength) {
         var tmpStr = inputStr.substring(inputStr.length - strlength); // chop off the oldest chars
@@ -230,11 +229,19 @@ function createSellOrder(client, crypto, price, volume, callback){
 //=======main CALCULATION function==============================================================================================
 helperObj.updateCalc = function (client, crypto, min, max, latest){
     // retrieve latest calcs for crypto
-    Calc.findOneAndUpdate({'instrument': crypto}, {'instrument': crypto}, {upsert:true}, function(err, myCalc){
+    Calc.findOneAndUpdate({'instrument': crypto, 'owner.username': activeUsername}, 
+                          {'instrument': crypto, 'owner.username': activeUsername},
+                          {upsert:true, new: true}, function(err, myCalc){
         if (err) {
             console.log(err.message);
         } else {
             // initialise some values
+            if (!myCalc.lastAction) { myCalc.lastAction = ""; }
+            if (!myCalc.recommendedAction) { myCalc.recommendedAction = ""; }
+            if (!myCalc.lastTradedPrice) { myCalc.lastTradedPrice = 0; }
+            if (!myCalc.runningProfit) { myCalc.runningProfit = 0; }
+            if (!myCalc.averagedownEnabled) { myCalc.averagedownEnabled = false; }
+            if (!myCalc.targetMargin) { myCalc.targetMargin = 10; }
             if (!myCalc.previousPrice) { myCalc.previousPrice = latest; }
             if (!myCalc.trend) { myCalc.trend = ""; }
             if (!myCalc.percentGain) { myCalc.percentGain = "0"; }
@@ -329,9 +336,9 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     myCalc.save();
                 }
             }
+            myCalc.previousPrice = latest;
+            myCalc.save();    
         }
-        myCalc.previousPrice = latest;
-        myCalc.save();
     });
 }
 

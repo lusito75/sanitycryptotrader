@@ -42,7 +42,7 @@ app.use(function(req, res, next){
     
 
 global.numberConverter = 100000000;    // one hundred million - BTC number converter to eliminate decimal values
-global.activeUsername = "";
+global.activeUsername = "SanitySoftware";
 global.mastermode = false;
 global.btcclient = null;
 global.mysecret = "";
@@ -74,7 +74,7 @@ var equityData = {
 }
 
 function setUpBtcClient() {
-    if (activeUsername && (btcclient == null)) {
+    if ((activeUsername !== "SanitySoftware") && (btcclient == null)) {
         User.findOne({username: activeUsername}, function(err, myUser) {
             if (err) {
                 console.log(err.message);

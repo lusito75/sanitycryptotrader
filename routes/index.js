@@ -100,9 +100,7 @@ router.post("/login", function(req, res, next) {
 // logout route
 router.get("/logout", function(req, res){
     req.logout();
-    // activeUsername = "";
-    // btcclient = null;
-    req.flash("success", "Logged you out!");
+    req.flash("success", "Logged you out, but beware - this will keep trading in your name. To deactivate trading, log back in and edit trading settings");
     res.redirect("/");
 });
 
