@@ -162,10 +162,10 @@ function analysePriceData(crypto) {
                 latest = priceArray[0];
             // console.log(crypto + ' min: ' + min + ' max: ' + max + ' latest: ' + latest);
             var timestamp = new Date(Date.now());
-            console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
 
             if (btcclient != null) {
                 helperCalc.updateCalc(btcclient, crypto, min, max, latest);
+                console.log(crypto + ' analysed ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
             } else { console.log('no BTC client setup - waiting to update calculations') }
         }
     });
@@ -250,6 +250,6 @@ setUpBtcClient();
 var indexRoutes = require('./routes/index');
 
 app.use(indexRoutes);
-app.listen(5000, function(){
+app.listen(5050, function(){
     console.log("Crypto Trader Server Started");
 });

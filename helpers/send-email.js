@@ -12,7 +12,7 @@ const transport = nodemailer.createTransport({
 module.exports = function sendEmail(subject, message) {
     const mailOptions = {
         from: 'Sanity Software - CryptoTrader',
-        to: 'paulo@lourenco.net.au',
+        to: activeUsername,
         subject: subject,
         html: message,
     };
