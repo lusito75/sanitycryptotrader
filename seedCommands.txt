@@ -20,6 +20,9 @@ db.calcs.update({}, {$set: {averagedownEnabled:false, recommendedAction: ""}}, {
 db.calcs.update({}, {$set: {pumpAndDumpMarket:false}}, {multi:true})
 db.calcs.update({}, {$set: {shortTermMin:0, shortTermMax:0}}, {multi:true})
 
+// remove multiple documents with conditions
+db.equities.deleteMany({ "owner" : { "$exists" : false } })
+
 
 // set TTL on ticks collection
 db.ticks.createIndex( { "timestamp": 1 }, { expireAfterSeconds: 7776000 } )    //90 days

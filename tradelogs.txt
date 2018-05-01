@@ -1,0 +1,277 @@
+[33m[nodemon] 1.14.7[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching: *.*[39m
+[32m[nodemon] starting `node app.js`[39m
+connecting to mongodb: mongodb://sanity:sanity@ds161426.mlab.com:61426/cryptotrader
+Crypto Trader Server Started
+(node:4661) DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
+no BTC client setup - waiting to capture prices ...
+no BTC client setup - waiting to capture prices ...
+no BTC client setup - waiting to capture prices ...
+no BTC client setup - waiting to capture prices ...
+no BTC client setup - waiting to capture prices ...
+no BTC client setup - waiting to capture prices ...
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+paulo@lourenco.net.au is logged in, and new BTC client connection established
+Robot updated!
+ETH analysed ... 2018-05-01 11:28:57
+LTC analysed ... 2018-05-01 11:28:57
+BTC analysed ... 2018-05-01 11:28:57
+ETH recent min: 838.33 recent max: 914.97 latest: 886.89 previous: 887.63 .. change: -0.08%  avg: -0.04%
+BCH analysed ... 2018-05-01 11:28:57
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12051.99 previous: 12023.77 .. change: 0.23%  avg: 0.13%
+LTC recent min: 190 recent max: 204.94 latest: 194.32 previous: 195.62 .. change: -0.66%  avg: -0.28%
+XRP analysed ... 2018-05-01 11:28:57
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1744.7 .. change: 0.02%  avg: 0.01%
+ETC analysed ... 2018-05-01 11:28:57
+XRP recent min: 1.04 recent max: 1.16 latest: 1.08 previous: 1.09 .. change: -0.92%  avg: -0.34%
+ETC recent min: 27.21 recent max: 29.99 latest: 27.94 previous: 27.94 .. change: 0.00%  avg: -0.00%
+XRP tick captured ... 2018-05-01 11:29:24
+ETH tick captured ... 2018-05-01 11:29:24
+LTC tick captured ... 2018-05-01 11:29:24
+BTC tick captured ... 2018-05-01 11:29:24
+ETC tick captured ... 2018-05-01 11:29:24
+BCH tick captured ... 2018-05-01 11:29:24
+LTC tick captured ... 2018-05-01 11:30:24
+ETH tick captured ... 2018-05-01 11:30:24
+XRP tick captured ... 2018-05-01 11:30:24
+BTC tick captured ... 2018-05-01 11:30:24
+BCH tick captured ... 2018-05-01 11:30:24
+ETC tick captured ... 2018-05-01 11:30:24
+XRP analysed ... 2018-05-01 11:30:26
+ETH analysed ... 2018-05-01 11:30:26
+ETC analysed ... 2018-05-01 11:30:26
+BTC analysed ... 2018-05-01 11:30:26
+BCH analysed ... 2018-05-01 11:30:26
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.08 .. change: 1.85%  avg: 0.75%
+ETH recent min: 838.33 recent max: 914.97 latest: 888.23 previous: 886.89 .. change: 0.15%  avg: 0.05%
+ETC recent min: 27.21 recent max: 29.99 latest: 27.94 previous: 27.94 .. change: 0.00%  avg: -0.00%
+LTC analysed ... 2018-05-01 11:30:26
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12007 previous: 12051.99 .. change: -0.37%  avg: -0.12%
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.32 .. change: 0.11%  avg: -0.09%
+AUD balance 653.92420607
+BTC balance 0
+LTC balance 0
+ETH balance 0
+XRP balance 0
+ETC balance 0
+BCH balance 0
+LTC tick captured ... 2018-05-01 11:31:24
+BTC tick captured ... 2018-05-01 11:31:24
+XRP tick captured ... 2018-05-01 11:31:24
+ETH tick captured ... 2018-05-01 11:31:24
+BCH tick captured ... 2018-05-01 11:31:24
+ETC tick captured ... 2018-05-01 11:31:24
+XRP analysed ... 2018-05-01 11:31:56
+ETC analysed ... 2018-05-01 11:31:56
+BCH analysed ... 2018-05-01 11:31:56
+ETH analysed ... 2018-05-01 11:31:56
+BTC analysed ... 2018-05-01 11:31:56
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.38%
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 27.94 .. change: 0.57%  avg: 0.29%
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+ETH recent min: 838.33 recent max: 914.97 latest: 888.23 previous: 888.23 .. change: 0.00%  avg: 0.03%
+LTC analysed ... 2018-05-01 11:31:56
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12007 previous: 12007 .. change: 0.00%  avg: -0.06%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.04%
+BCH tick captured ... 2018-05-01 11:32:24
+BTC tick captured ... 2018-05-01 11:32:24
+XRP tick captured ... 2018-05-01 11:32:24
+ETH tick captured ... 2018-05-01 11:32:24
+LTC tick captured ... 2018-05-01 11:32:24
+ETC tick captured ... 2018-05-01 11:32:24
+ETC tick captured ... 2018-05-01 11:33:24
+BCH tick captured ... 2018-05-01 11:33:24
+XRP tick captured ... 2018-05-01 11:33:24
+LTC tick captured ... 2018-05-01 11:33:24
+BTC tick captured ... 2018-05-01 11:33:24
+ETH tick captured ... 2018-05-01 11:33:24
+BTC analysed ... 2018-05-01 11:33:26
+LTC analysed ... 2018-05-01 11:33:26
+ETC analysed ... 2018-05-01 11:33:26
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12007 previous: 12007 .. change: 0.00%  avg: -0.03%
+ETH analysed ... 2018-05-01 11:33:26
+BCH analysed ... 2018-05-01 11:33:26
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.02%
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.14%
+ETH recent min: 838.33 recent max: 914.97 latest: 888.23 previous: 888.23 .. change: 0.00%  avg: 0.01%
+XRP analysed ... 2018-05-01 11:33:26
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.19%
+BTC tick captured ... 2018-05-01 11:34:24
+XRP tick captured ... 2018-05-01 11:34:24
+LTC tick captured ... 2018-05-01 11:34:24
+ETH tick captured ... 2018-05-01 11:34:24
+BCH tick captured ... 2018-05-01 11:34:24
+ETC tick captured ... 2018-05-01 11:34:25
+AUD balance 653.92420607
+BTC balance 0
+LTC balance 0
+ETH balance 0
+XRP balance 0
+ETC balance 0
+BCH balance 0
+TOTAL portfolio Value: $653.92
+ETC analysed ... 2018-05-01 11:34:56
+LTC analysed ... 2018-05-01 11:34:56
+BCH analysed ... 2018-05-01 11:34:56
+XRP analysed ... 2018-05-01 11:34:56
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.07%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.01%
+ETH analysed ... 2018-05-01 11:34:56
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.09%
+BTC analysed ... 2018-05-01 11:34:56
+ETH recent min: 838.33 recent max: 914.97 latest: 888.23 previous: 888.23 .. change: 0.00%  avg: 0.01%
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12007 previous: 12007 .. change: 0.00%  avg: -0.02%
+ETH tick captured ... 2018-05-01 11:35:24
+XRP tick captured ... 2018-05-01 11:35:24
+BCH tick captured ... 2018-05-01 11:35:24
+ETC tick captured ... 2018-05-01 11:35:24
+BTC tick captured ... 2018-05-01 11:35:24
+LTC tick captured ... 2018-05-01 11:35:24
+BCH tick captured ... 2018-05-01 11:36:24
+ETC tick captured ... 2018-05-01 11:36:24
+LTC tick captured ... 2018-05-01 11:36:24
+ETH tick captured ... 2018-05-01 11:36:24
+XRP tick captured ... 2018-05-01 11:36:24
+BTC tick captured ... 2018-05-01 11:36:25
+ETC analysed ... 2018-05-01 11:36:26
+BCH analysed ... 2018-05-01 11:36:26
+LTC analysed ... 2018-05-01 11:36:26
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.04%
+ETH analysed ... 2018-05-01 11:36:26
+BTC analysed ... 2018-05-01 11:36:26
+XRP analysed ... 2018-05-01 11:36:26
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.01%
+ETH recent min: 838.33 recent max: 914.97 latest: 889.37 previous: 888.23 .. change: 0.13%  avg: 0.07%
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12007 previous: 12007 .. change: 0.00%  avg: -0.01%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.05%
+ETH tick captured ... 2018-05-01 11:37:24
+BTC tick captured ... 2018-05-01 11:37:24
+BCH tick captured ... 2018-05-01 11:37:24
+LTC tick captured ... 2018-05-01 11:37:24
+ETC tick captured ... 2018-05-01 11:37:24
+XRP tick captured ... 2018-05-01 11:37:24
+BTC analysed ... 2018-05-01 11:37:56
+XRP analysed ... 2018-05-01 11:37:56
+ETC analysed ... 2018-05-01 11:37:56
+BCH analysed ... 2018-05-01 11:37:56
+ETH analysed ... 2018-05-01 11:37:56
+BTC recent min: 11800.03 recent max: 12448.87 latest: 11970 previous: 12007 .. change: -0.31%  avg: -0.16%
+LTC analysed ... 2018-05-01 11:37:56
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.02%
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.02%
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+ETH recent min: 838.33 recent max: 914.97 latest: 889.37 previous: 889.37 .. change: 0.00%  avg: 0.03%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.00%
+AUD balance 653.92420607
+BTC balance 0
+LTC balance 0
+ETH balance 0
+XRP balance 0
+ETC balance 0
+BCH balance 0
+TOTAL portfolio Value: $653.92
+ETH tick captured ... 2018-05-01 11:38:24
+LTC tick captured ... 2018-05-01 11:38:24
+ETC tick captured ... 2018-05-01 11:38:24
+XRP tick captured ... 2018-05-01 11:38:24
+BCH tick captured ... 2018-05-01 11:38:24
+BTC tick captured ... 2018-05-01 11:38:24
+LTC tick captured ... 2018-05-01 11:39:24
+ETC tick captured ... 2018-05-01 11:39:24
+ETH tick captured ... 2018-05-01 11:39:24
+BTC tick captured ... 2018-05-01 11:39:24
+BCH tick captured ... 2018-05-01 11:39:24
+XRP tick captured ... 2018-05-01 11:39:24
+ETC analysed ... 2018-05-01 11:39:26
+ETH analysed ... 2018-05-01 11:39:26
+BTC analysed ... 2018-05-01 11:39:26
+BCH analysed ... 2018-05-01 11:39:26
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.01%
+LTC analysed ... 2018-05-01 11:39:26
+XRP analysed ... 2018-05-01 11:39:26
+ETH recent min: 838.33 recent max: 914.97 latest: 886.61 previous: 889.37 .. change: -0.31%  avg: -0.14%
+BTC recent min: 11800.03 recent max: 12448.87 latest: 11970 previous: 11970 .. change: 0.00%  avg: -0.08%
+BCH recent min: 1662.52 recent max: 1910 latest: 1745 previous: 1745 .. change: 0.00%  avg: 0.00%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.00%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.1 previous: 1.1 .. change: 0.00%  avg: 0.01%
+BTC tick captured ... 2018-05-01 11:40:24
+ETH tick captured ... 2018-05-01 11:40:24
+LTC tick captured ... 2018-05-01 11:40:24
+BCH tick captured ... 2018-05-01 11:40:24
+XRP tick captured ... 2018-05-01 11:40:24
+ETC tick captured ... 2018-05-01 11:40:24
+ETC analysed ... 2018-05-01 11:40:56
+BCH analysed ... 2018-05-01 11:40:56
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.00%
+ETH analysed ... 2018-05-01 11:40:56
+XRP analysed ... 2018-05-01 11:40:56
+LTC analysed ... 2018-05-01 11:40:56
+BTC analysed ... 2018-05-01 11:40:56
+BCH recent min: 1662.52 recent max: 1910 latest: 1744.7 previous: 1745 .. change: -0.02%  avg: -0.01%
+ETH recent min: 838.33 recent max: 914.97 latest: 886.61 previous: 886.61 .. change: 0.00%  avg: -0.07%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.09 previous: 1.1 .. change: -0.91%  avg: -0.45%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.00%
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12005.05 previous: 11970 .. change: 0.29%  avg: 0.11%
+BTC tick captured ... 2018-05-01 11:41:24
+ETH tick captured ... 2018-05-01 11:41:24
+ETC tick captured ... 2018-05-01 11:41:24
+XRP tick captured ... 2018-05-01 11:41:24
+BCH tick captured ... 2018-05-01 11:41:24
+LTC tick captured ... 2018-05-01 11:41:24
+AUD balance 653.92420607
+BTC balance 0
+LTC balance 0
+ETH balance 0
+XRP balance 0
+ETC balance 0
+BCH balance 0
+TOTAL portfolio Value: $653.92
+BTC tick captured ... 2018-05-01 11:42:24
+XRP tick captured ... 2018-05-01 11:42:24
+ETH tick captured ... 2018-05-01 11:42:24
+LTC tick captured ... 2018-05-01 11:42:24
+BCH tick captured ... 2018-05-01 11:42:24
+ETC tick captured ... 2018-05-01 11:42:24
+BTC analysed ... 2018-05-01 11:42:26
+LTC analysed ... 2018-05-01 11:42:26
+XRP analysed ... 2018-05-01 11:42:26
+BCH analysed ... 2018-05-01 11:42:26
+ETH analysed ... 2018-05-01 11:42:26
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12005.05 previous: 12005.05 .. change: 0.00%  avg: 0.05%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.00%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.09 previous: 1.09 .. change: 0.00%  avg: -0.22%
+ETC analysed ... 2018-05-01 11:42:26
+BCH recent min: 1662.52 recent max: 1910 latest: 1744.7 previous: 1744.7 .. change: 0.00%  avg: -0.00%
+ETH recent min: 838.33 recent max: 914.97 latest: 886.61 previous: 886.61 .. change: 0.00%  avg: -0.03%
+ETC recent min: 27.21 recent max: 29.99 latest: 28.1 previous: 28.1 .. change: 0.00%  avg: 0.00%
+XRP tick captured ... 2018-05-01 11:43:24
+ETH tick captured ... 2018-05-01 11:43:24
+BCH tick captured ... 2018-05-01 11:43:24
+LTC tick captured ... 2018-05-01 11:43:24
+ETC tick captured ... 2018-05-01 11:43:24
+BTC tick captured ... 2018-05-01 11:43:24
+ETC analysed ... 2018-05-01 11:43:56
+BCH analysed ... 2018-05-01 11:43:56
+XRP analysed ... 2018-05-01 11:43:56
+LTC analysed ... 2018-05-01 11:43:56
+ETH analysed ... 2018-05-01 11:43:56
+ETC recent min: 27.21 recent max: 29.99 latest: 28 previous: 28.1 .. change: -0.36%  avg: -0.18%
+BTC analysed ... 2018-05-01 11:43:56
+BCH recent min: 1662.52 recent max: 1910 latest: 1744.7 previous: 1744.7 .. change: 0.00%  avg: -0.00%
+XRP recent min: 1.04 recent max: 1.16 latest: 1.09 previous: 1.09 .. change: 0.00%  avg: -0.11%
+LTC recent min: 190 recent max: 204.94 latest: 194.54 previous: 194.54 .. change: 0.00%  avg: -0.00%
+ETH recent min: 838.33 recent max: 914.97 latest: 886.61 previous: 886.61 .. change: 0.00%  avg: -0.02%
+BTC recent min: 11800.03 recent max: 12448.87 latest: 12005.05 previous: 12005.05 .. change: 0.00%  avg: 0.03%
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `node app.js`[39m
+connecting to mongodb: mongodb://sanity:sanity@ds161426.mlab.com:61426/cryptotrader
+Crypto Trader Server Started

@@ -242,7 +242,7 @@ setInterval(analysePriceData.bind(null, "XRP"), 90000);
 setInterval(analysePriceData.bind(null, "ETC"), 90000);
 
 //update equity data
-setInterval(updateEquityData.bind(null), 216000); //21600000 (6 hours)
+setInterval(updateEquityData.bind(null), 21600000); //21600000 (6 hours)
 
 setUpBtcClient();
 
