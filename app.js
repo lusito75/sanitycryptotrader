@@ -61,7 +61,7 @@ var mongoOptions = {
 }
 mongoose.connect(mongoUrl, mongoOptions);
 
-//global var  to store balances temporarily
+// var  to store balances temporarily
 var equityData = {
     AUD: 0,
     BTCbal: 0, BTCval: 0,
@@ -71,6 +71,9 @@ var equityData = {
     XRPbal: 0, XRPval: 0,
     ETCbal: 0, ETCval: 0,
     TOTval: 0,
+    owner: {
+        username: activeUsername,
+    },
 }
 
 function setUpBtcClient() {
@@ -105,7 +108,6 @@ function capturePriceData(crypto) {
         btcclient.getTick(crypto, "AUD", function(err, data) {
             if(!err){
                 var timestamp = new Date(Date.now());
-                console.log(crypto + ' tick captured ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, ''));
                 switch (data.instrument) {
                     case "BTC":
                         equityData.BTCval = (equityData.BTCbal * data.lastPrice) / numberConverter;                            
@@ -127,10 +129,10 @@ function capturePriceData(crypto) {
                         break;
                 }
                 equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval + equityData.LTCval + equityData.BCHval + equityData.XRPval + equityData.ETCval;
-                if ( (secrets.api_key && secrets.api_secret) || (secrets.mongosvr === "localhost") ) {
-                    // only create a new price tick in db if master or local instance
+                if ( (activeUsername === "SanitySoftware") || (activeUsername === "paulo@lourenco.net.au") || (secrets.mongosvr === "localhost") ) {
+                    // only create a new price tick in db if master user or local instance
                     Tick.create(data, function(err, newData){
-                        if (err) { console.log(err.message)}
+                        if (err) { console.log(err.message); } else { console.log(crypto + ' tick captured ... ' + timestamp.toISOString().replace(/T/, ' ').replace(/\..+/, '')); }
                     });
                 }
             } else { console.log(err.message); }
@@ -187,6 +189,7 @@ function updateEquityData() {
                 data.forEach(function(account) {
                     console.log(account.currency + ' balance ' + account.balance / numberConverter);
                     crypto = account.currency;
+                    equityData.owner.username = activeUsername;
                     switch (crypto) {
                         case "BTC":
                             equityData.BTCbal = account.balance;                            

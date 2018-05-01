@@ -1,5 +1,27 @@
 <% include partials/header %>
 
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <% calcs.forEach(function(calc){ %>
+                        <div class="form-group">
+                            <label><input class="form-control" type="text" name="instrument" value="<%= calc.instrument %>" readonly></label>
+                            <label>Last Price<input class="form-control" type="number" name="lastprice" value="<%= calc.previousPrice %>" readonly></label>
+                            <label>Last Trade / Avg Profit<input class="form-control" type="text" name="lasttradedprice" 
+                                value="<%= calc.lastTradedPrice.toFixed(2) %> / <%= calc.lastAction %> / <%= calc.runningProfit.toFixed(1) %>%" readonly>
+                            </label>
+                            <p>
+                                <a href="/calcs/<%= calc._id %>/edit" class="btn btn-primary">Details</a>
+                            </p>
+                        </div>
+                    <% }) %>
+                    <div class="well well-sm">
+                        <h2>$<%= latestVals.TOTval.toFixed(2) %></h2>      
+                        <p>Total investment value as of <%= updated %>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
         <div class="container">

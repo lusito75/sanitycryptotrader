@@ -25,8 +25,29 @@ router.get("/", function(req, res){
 });
 
 // Authenticated route to view active portfolio
-router.get("/portfolio", function(req, res){
-    res.render("portfolio");
+router.get("/portfolio", middleware.isLoggedIn, function(req, res){
+    Calc.find({'owner.username': activeUsername}, function(err, allCalcs){
+        if (err) {
+            console.log(err.message);
+        } else {
+            Equity.find({'owner.username': activeUsername}).sort({'createdAt': -1}).limit(500).find( function (err, latestEquities) {
+                if (err) {
+                    console.log(err.message);
+                } else {
+                    var latestUpdate;
+                    var latestEquity;
+                    // if brand new user and no calcs or equities yet exist .. pass in some temp values to the template
+                    if (allCalcs.length === 0) {
+                        console.log ("NO CALCS FOR THIS USER YET!!!");
+                        latestUpdate = new Date(Date.now());
+                    } else {
+                        latestUpdate = allCalcs[0].updatedAt;
+                    }
+                    res.render("portfolio", {calcs: allCalcs, updated: latestUpdate, latestVals: latestEquities[0], equities: latestEquities});
+                }
+            });
+        }
+    });
 });
 
 
@@ -43,10 +64,10 @@ router.put("/calcs/:id", function(req, res){
     Calc.findByIdAndUpdate(req.params.id, req.body.calc, function(err, updatedCalc){
         if (err) {
             console.log(err.message);
-            res.redirect("/");
+            res.redirect("/portfolio");
         } else {
             console.log("Robot updated!");
-            res.redirect("/");
+            res.redirect("/portfolio");
         }
     });
 });
@@ -69,6 +90,27 @@ router.post("/register", function(req, res){
         }
         req.flash("success", "Welcome to Sanity Crypto Trader " + req.body.username + " !");
         passport.authenticate("local")(req, res, function(){
+            var tmpEquityData = {
+                AUD: 0,
+                BTCbal: 0, BTCval: 0,
+                ETHbal: 0, ETHval: 0,
+                LTCbal: 0, LTCval: 0,
+                BCHbal: 0, BCHval: 0,
+                XRPbal: 0, XRPval: 0,
+                ETCbal: 0, ETCval: 0,
+                TOTval: 0,
+                owner: {
+                    username: req.body.username,
+                },
+            };
+            // create new equity for new user
+            Equity.create(tmpEquityData, function(err, newData){
+                if (err) { console.log(err.message)}
+            });
+
+            activeUsername = req.body.username;
+            btcclient = null; //force a new client to be setup
+
             res.redirect("/portfolio");
         });
     });
@@ -116,6 +158,10 @@ router.put("/edituser", middleware.isLoggedIn, function(req, res){
             req.flash("error", err.message);
             res.redirect("/portfolio");
         }
+        //reset the BTC client
+        mykey     = req.body.api_key;
+        mysecret  = req.body.api_secret;
+        btcclient = null;
         // only update password if both fields filled out on form
         if (req.body.oldPassword && req.body.newPassword) {
             myUser.changePassword(req.body.oldPassword, req.body.newPassword, function(err, myUser){
