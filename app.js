@@ -248,8 +248,11 @@ setUpBtcClient();
 
 // start the web server
 var indexRoutes = require('./routes/index');
+var dbRoutes    = require('./routes/data');
 
 app.use(indexRoutes);
+app.use(dbRoutes);
+
 app.listen(5050, function(){
     console.log("Crypto Trader Server Started");
 });
