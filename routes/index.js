@@ -30,20 +30,36 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            Equity.find({'owner.username': activeUsername}).sort({'createdAt': -1}).limit(500).find( function (err, latestEquities) {
+            Equity.find({'owner.username': activeUsername}).sort({'createdAt': 1}).limit(1000).find( function (err, latestEquities) {
                 if (err) {
                     console.log(err.message);
                 } else {
-                    var latestUpdate;
-                    var latestEquity;
-                    // if brand new user and no calcs or equities yet exist .. pass in some temp values to the template
-                    if (allCalcs.length === 0) {
-                        console.log ("NO CALCS FOR THIS USER YET!!!");
-                        latestUpdate = new Date(Date.now());
-                    } else {
-                        latestUpdate = allCalcs[0].updatedAt;
-                    }
-                    res.render("portfolio", {calcs: allCalcs, updated: latestUpdate, latestVals: latestEquities[0], equities: latestEquities});
+                    //format data for chartjs
+                    var eqLabels = [];
+                    let eqTOTData = [], eqAUDdata = [], eqBTCdata = [], eqETHdata = [], eqLTCdata = [], eqXRPdata = [], eqBCHdata = [], eqETCdata = [];
+                    latestEquities.forEach(function(equity){
+                        eqLabels.push(new Date(equity.createdAt).getTime());
+                        eqTOTData.push(equity.TOTval.toFixed(2));
+                        eqAUDdata.push(equity.AUD.toFixed(2));
+                        eqBTCdata.push(equity.BTCval.toFixed(2));
+                        eqETHdata.push(equity.ETHval.toFixed(2));
+                        eqLTCdata.push(equity.LTCval.toFixed(2));
+                        eqXRPdata.push(equity.XRPval.toFixed(2));
+                        eqBCHdata.push(equity.BCHval.toFixed(2));
+                        eqETCdata.push(equity.ETCval.toFixed(2));
+                    });
+                    res.render("portfolio", {
+                        calcs: allCalcs,
+                        labels: eqLabels,
+                        TOTdata: eqTOTData,
+                        AUDdata: eqAUDdata,
+                        BTCdata: eqBTCdata,
+                        ETHdata: eqETHdata,
+                        LTCdata: eqLTCdata,
+                        XRPdata: eqXRPdata,
+                        BCHdata: eqBCHdata,
+                        ETCdata: eqETCdata,
+                    });
                 }
             });
         }

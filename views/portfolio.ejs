@@ -16,8 +16,96 @@
                         </div>
                     <% }) %>
                     <div class="well well-sm">
-                        <h2>$<%= latestVals.TOTval.toFixed(2) %></h2>      
-                        <p>Total investment value as of <%= updated %>.</p>
+                        <canvas id="myChart"></canvas>
+                        <!-- Start Js -->
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+                        <script>
+                            let ctx = document.querySelector('#myChart').getContext('2d');
+
+                            let rawDateLabels = [<%= labels %>];
+                            let formatDateLabels = [];
+                            rawDateLabels.forEach(function(dl){
+                                let dateStr = new Date(dl).toLocaleDateString('en-GB');
+                                formatDateLabels.push(dateStr);
+                            });
+
+                            let myChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: formatDateLabels,
+                                    datasets: [{
+                                        label: 'Total AUD',
+                                        data: [<%= TOTdata %>],
+                                        backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                                        borderColor: 'rgba(255, 0, 0, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'AUD in balance',
+                                        data: [<%= AUDdata %>],
+                                        backgroundColor: 'rgba(255, 255, 0, 0.2)',
+                                        borderColor: 'rgba(255, 255, 0, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'BTC',
+                                        data: [<%= BTCdata %>],
+                                        backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                                        borderColor: 'rgba(0, 255, 0, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'ETH',
+                                        data: [<%= ETHdata %>],
+                                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                                        borderColor: 'rgba(0, 0, 255, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'XRP',
+                                        data: [<%= XRPdata %>],
+                                        backgroundColor: 'rgba(128, 0, 0, 0.2)',
+                                        borderColor: 'rgba(128, 0, 0, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'LTC',
+                                        data: [<%= LTCdata %>],
+                                        backgroundColor: 'rgba(0, 128, 0, 0.2)',
+                                        borderColor: 'rgba(0, 128, 0, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'BCH',
+                                        data: [<%= BCHdata %>],
+                                        backgroundColor: 'rgba(0, 0, 128, 0.2)',
+                                        borderColor: 'rgba(0, 0, 128, 1)',
+                                        fill: false
+                                    },
+                                    {
+                                        label: 'ETC',
+                                        data: [<%= ETCdata %>],
+                                        backgroundColor: 'rgba(64, 0, 0, 0.2)',
+                                        borderColor: 'rgba(64, 0, 0, 1)',
+                                        fill: false
+                                    }],
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'EQUITY values',
+                                        fontSize: 18
+                                    }
+                                }
+                            }); // end chart obj
+                        </script>
                     </div>
                 </div>
             </div>
