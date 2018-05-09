@@ -30,7 +30,7 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            Equity.find({'owner.username': activeUsername}).sort({'createdAt': 1}).limit(1000).find( function (err, latestEquities) {
+            Equity.find({'owner.username': activeUsername}).sort({'createdAt': -1}).limit(1000).find( function (err, latestEquities) {
                 if (err) {
                     console.log(err.message);
                 } else {
@@ -48,6 +48,16 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                         eqBCHdata.push(equity.BCHval.toFixed(2));
                         eqETCdata.push(equity.ETCval.toFixed(2));
                     });
+                    eqLabels.reverse();
+                    eqTOTData.reverse();
+                    eqAUDdata.reverse();
+                    eqBTCdata.reverse();
+                    eqETHdata.reverse();
+                    eqLTCdata.reverse();
+                    eqXRPdata.reverse();
+                    eqBCHdata.reverse();
+                    eqETCdata.reverse();
+                    
                     res.render("portfolio", {
                         calcs: allCalcs,
                         labels: eqLabels,
