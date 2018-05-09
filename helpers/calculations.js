@@ -308,7 +308,7 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     myCalc.save();
                 }
             }
-            else if ( (myCalc.lastAction === "sell") || (myCalc.recommendedAction === "averagedown") ) {
+            else if ( (myCalc.lastAction === "sell") || (myCalc.lastAction === "na") || (myCalc.recommendedAction === "averagedown") ) {
                 let {buy, weight} = doWeBuy (myCalc, latest, change, min);
                 if (buy) {
                     //update lastTradedPrice, update lastAction, average out running profit
