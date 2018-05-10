@@ -5,6 +5,49 @@
         <h3 style="text-align:center"><%= calc.instrument %></h3>
         <h4 style="text-align:center">currently $<%= calc.previousPrice %>, average change rate: <%= calc.percentGain.toFixed(1) %>%</h4>
         <p style="text-align:center">recent low $<%= calc.shortTermMin %>, recent high $<%= calc.shortTermMax %></p>
+            <div class="well well-sm">
+                <canvas id="myChart"></canvas>
+                <!-- Start Js -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+                <script>
+                    let ctx = document.querySelector('#myChart').getContext('2d');
+
+                    let rawDateLabels = [<%= labels %>];
+                    let formatDateLabels = [];
+                    rawDateLabels.forEach(function(dl){
+                        let dateStr = new Date(dl).toLocaleDateString('en-GB');
+                        formatDateLabels.push(dateStr);
+                    });
+
+                    let myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: formatDateLabels,
+                            datasets: [{
+                                label: '<%= calc.instrument %>',
+                                data: [<%= prices %>],
+                                backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                                borderColor: 'rgba(255, 0, 0, 1)',
+                                fill: false
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero:false
+                                    }
+                                }]
+                            },
+                            title: {
+                                display: true,
+                                text: '<%= calc.instrument %> recent prices',
+                                fontSize: 18
+                            }
+                        }
+                    }); // end chart obj
+                </script>
+            </div>
             <div style="width:30%; margin:25px auto;">
                 <form action="/calcs/<%= calc._id %>?_method=PUT" method="POST">
                     <div class="form-group">

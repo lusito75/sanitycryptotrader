@@ -6,6 +6,7 @@ var middleware  = require('../middleware/mdwindex');
 var Calc    = require('../models/calc');
 var Equity  = require('../models/equity');
 var User    = require('../models/user');
+var Tick    = require('../models/tick');
 
 router.get("/", function(req, res){
     // res.send("Crypto Trader landing page");
@@ -80,7 +81,24 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
 // EDIT calc route
 router.get("/calcs/:id/edit", function(req, res){
     Calc.findById(req.params.id, function(err, foundCalc){
-        res.render("calcs/edit", {calc: foundCalc});
+        // from foundCalc, get the instrument, and retrieve last 2000
+        let priceData  = [];
+        let dateLabels = [];
+        let queryPrices = Tick.find({'instrument': foundCalc.instrument}).sort({'timestamp': -1}).limit(2000);
+        queryPrices.exec(function (err, latestTicks){
+            if (err) {
+                console.log(err.message);
+            } else {
+                // push lastPrice to local array
+                latestTicks.forEach(function(price){
+                    priceData.push(price.lastPrice);
+                    dateLabels.push(price.timestamp*1000); //unix timestamp is seconds .. need ms
+                });
+                dateLabels.reverse();
+                priceData.reverse();
+                res.render("calcs/edit", {calc: foundCalc, labels: dateLabels, prices: priceData});
+            }
+        });
     });
 });
 
