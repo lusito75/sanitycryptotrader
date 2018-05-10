@@ -18,6 +18,8 @@ var express       = require('express'),
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+//static routes to npm packages
+app.use('/chartjs_scripts', express.static(__dirname + '/node_modules/chart.js/dist/'));
 app.use(methodOverride("_method"));
 app.use(flash());
 
@@ -143,7 +145,7 @@ function capturePriceData(crypto) {
 // function to update trade calculations based on recent price data
 function analysePriceData(crypto) {
     setUpBtcClient();
-    // retrieve last 2000 samplea at 1.5 minutes sample intervals (~2 days)
+    // retrieve last 2000 samples at 1.5 minutes sample intervals (~2 days)
     var priceArray  = [];
     var queryPrices = Tick.find({'instrument': crypto}).sort({'timestamp': -1}).limit(2000);
 
