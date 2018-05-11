@@ -18,7 +18,9 @@
                     <div class="well well-sm">
                         <canvas id="myChart"></canvas>
                         <!-- Start Js -->
-                        <script src="/chartjs_scripts/Chart.min.js"></script>
+                        <script src="/chartjs/Chart.min.js"></script>
+                        <script src="/hammerjs/hammer.min.js"></script>
+                        <script src="/chartjszoom/chartjs-plugin-zoom.min.js"></script>
                         <script>
                             let ctx = document.querySelector('#myChart').getContext('2d');
 
@@ -102,7 +104,17 @@
                                         display: true,
                                         text: 'EQUITY values',
                                         fontSize: 18
-                                    }
+                                    },
+                                    pan: {
+				            	        enabled: true,
+					                    mode: 'xy',
+				                    },
+                                    zoom: {
+				            	        enabled: true,
+                                        // sensitivity:0.5,
+                                        drag:true,
+					                    mode: 'xy',
+				                    }
                                 }
                             }); // end chart obj
                         </script>

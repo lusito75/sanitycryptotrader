@@ -89,11 +89,11 @@ router.get("/calcs/:id/edit", function(req, res){
             if (err) {
                 console.log(err.message);
             } else {
-                // push lastPrice to local array
-                latestTicks.forEach(function(price){
-                    priceData.push(price.lastPrice);
-                    dateLabels.push(price.timestamp*1000); //unix timestamp is seconds .. need ms
-                });
+                // push lastPrice to local array , smooth results by skipping every 10 samples
+                for (var i=0; i < latestTicks.length; i+=10) {
+                    priceData.push(latestTicks[i].lastPrice);
+                    dateLabels.push(latestTicks[i].timestamp*1000); //unix timestamp is seconds .. needs to be ms
+                };
                 dateLabels.reverse();
                 priceData.reverse();
                 res.render("calcs/edit", {calc: foundCalc, labels: dateLabels, prices: priceData});

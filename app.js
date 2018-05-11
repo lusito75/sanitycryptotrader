@@ -19,7 +19,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 //static routes to npm packages
-app.use('/chartjs_scripts', express.static(__dirname + '/node_modules/chart.js/dist/'));
+app.use('/chartjs', express.static(__dirname + '/node_modules/chart.js/dist/'));
+app.use('/hammerjs', express.static(__dirname + '/node_modules/hammerjs/')); //pinch gestures
+app.use('/chartjszoom', express.static(__dirname + '/node_modules/chartjs-plugin-zoom/'));
+
 app.use(methodOverride("_method"));
 app.use(flash());
 

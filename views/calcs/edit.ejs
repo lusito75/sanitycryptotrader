@@ -8,7 +8,9 @@
             <div class="well well-sm">
                 <canvas id="myChart"></canvas>
                 <!-- Start Js -->
-                <script src="/chartjs_scripts/Chart.min.js"></script>
+                <script src="/chartjs/Chart.min.js"></script>
+                <script src="/hammerjs/hammer.min.js"></script>
+                <script src="/chartjszoom/chartjs-plugin-zoom.min.js"></script>
                 <script>
                     let ctx = document.querySelector('#myChart').getContext('2d');
 
@@ -32,6 +34,7 @@
                             }],
                         },
                         options: {
+                            responsive: true,
                             scales: {
                                 yAxes: [{
                                     ticks: {
@@ -43,7 +46,17 @@
                                 display: true,
                                 text: '<%= calc.instrument %> recent prices',
                                 fontSize: 18
-                            }
+                            },
+                            pan: {
+				            	enabled: true,
+					            mode: 'xy',
+				            },
+                            zoom: {
+				            	enabled: true,
+                                // sensitivity:1,
+                                drag:true,
+					            mode: 'xy',
+				            }
                         }
                     }); // end chart obj
                 </script>
