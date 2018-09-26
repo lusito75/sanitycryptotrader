@@ -75,6 +75,8 @@ var equityData = {
     BCHbal: 0, BCHval: 0,
     XRPbal: 0, XRPval: 0,
     ETCbal: 0, ETCval: 0,
+    OMGbal: 0, OMGval: 0,
+    POWRbal: 0, POWRval: 0,
     TOTval: 0,
     owner: {
         username: activeUsername,
@@ -132,8 +134,16 @@ function capturePriceData(crypto) {
                     case "ETC":
                         equityData.ETCval = (equityData.ETCbal * data.lastPrice) / numberConverter;                            
                         break;
+                    case "OMG":
+                        equityData.OMGval = (equityData.OMGbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "POWR":
+                        equityData.POWRval = (equityData.POWRbal * data.lastPrice) / numberConverter;                            
+                        break;
                 }
-                equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval + equityData.LTCval + equityData.BCHval + equityData.XRPval + equityData.ETCval;
+                equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval
+                                     + equityData.LTCval + equityData.BCHval + equityData.XRPval
+                                     + equityData.ETCval + equityData.OMGval + equityData.POWRval;
                 if ( (activeUsername === "SanitySoftware") || (activeUsername === "paulo@lourenco.net.au") || (secrets.mongosvr === "localhost") ) {
                     // only create a new price tick in db if master user or local instance
                     Tick.create(data, function(err, newData){
@@ -214,6 +224,12 @@ function updateEquityData() {
                         case "ETC":
                             equityData.ETCbal = account.balance;                            
                             break;
+                        case "OMG":
+                            equityData.OMGbal = account.balance;                            
+                            break;
+                        case "POWR":
+                            equityData.POWRbal = account.balance;                            
+                            break;
                         case "AUD":
                             equityData.AUD = account.balance / numberConverter;
                             break;
@@ -238,6 +254,8 @@ setInterval(capturePriceData.bind(null, "LTC"), 60000);
 setInterval(capturePriceData.bind(null, "BCH"), 60000);
 setInterval(capturePriceData.bind(null, "XRP"), 60000);
 setInterval(capturePriceData.bind(null, "ETC"), 60000);
+setInterval(capturePriceData.bind(null, "OMG"), 60000);
+setInterval(capturePriceData.bind(null, "POWR"), 60000);
 
 setInterval(analysePriceData.bind(null, "BTC"), 90000); //90000 (1.5 minute / 90s)
 setInterval(analysePriceData.bind(null, "ETH"), 90000);
@@ -245,6 +263,8 @@ setInterval(analysePriceData.bind(null, "LTC"), 90000);
 setInterval(analysePriceData.bind(null, "BCH"), 90000);
 setInterval(analysePriceData.bind(null, "XRP"), 90000);
 setInterval(analysePriceData.bind(null, "ETC"), 90000);
+setInterval(analysePriceData.bind(null, "OMG"), 90000);
+setInterval(analysePriceData.bind(null, "POWR"), 90000);
 
 //update equity data
 setInterval(updateEquityData.bind(null), 21600000); //21600000 (6 hours)

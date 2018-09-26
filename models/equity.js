@@ -10,6 +10,8 @@ var equitySchema = new mongoose.Schema({
     BCHbal: Number, BCHval: Number,
     XRPbal: Number, XRPval: Number,
     ETCbal: Number, ETCval: Number,
+    OMGbal: Number, OMGval: Number,
+    POWRbal: Number, POWRval: Number,
     TOTval: Number,
     owner: {
         id: 

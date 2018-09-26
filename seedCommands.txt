@@ -9,6 +9,7 @@ db.calcs.findOneAndUpdate({instrument:"BTC"}, {$set: {lastAction: "sell", lastTr
 db.calcs.findOneAndUpdate({instrument:"ETH"}, {$set: {lastAction: "sell", lastTradedPrice: 1000, runningProfit: 100}})
 db.calcs.findOneAndUpdate({instrument:"LTC"}, {$set: {lastAction: "sell", lastTradedPrice: 425, runningProfit: 325}})
 db.calcs.findOneAndUpdate({instrument:"XRP"}, {$set: {lastAction: "buy", lastTradedPrice: 1.47, targetMargin: 5}})
+db.calcs.findOneAndUpdate({instrument:"OMG"}, {$set: {lastAction: "na", lastTradedPrice: 0, targetMargin: 5, stoplossEnabled:false, tradingEnabled:false}})
 
 // update all docs, with new fields
 db.calcs.update({}, {$set: {targetMargin:10, tradingEnabled:true, lastAction:"NA", lastTradedPrice:0, stoplossEnabled:false, runningProfit: 0}}, {multi:true})
@@ -19,6 +20,7 @@ db.calcs.update({}, {$set: {stoplossEnabled:false}}, {multi:true})
 db.calcs.update({}, {$set: {averagedownEnabled:false, recommendedAction: ""}}, {multi:true})
 db.calcs.update({}, {$set: {pumpAndDumpMarket:false}}, {multi:true})
 db.calcs.update({}, {$set: {shortTermMin:0, shortTermMax:0}}, {multi:true})
+db.equities.update({}, {$set: {OMGbal:0, OMGval:0, POWRbal:0, POWRval:0}}, {multi:true})
 
 // remove multiple documents with conditions
 db.equities.deleteMany({ "owner" : { "$exists" : false } })
