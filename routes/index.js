@@ -37,7 +37,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                 } else {
                     //format data for chartjs
                     var eqLabels = [];
-                    let eqTOTData = [], eqAUDdata = [], eqBTCdata = [], eqETHdata = [], eqLTCdata = [], eqXRPdata = [], eqBCHdata = [], eqETCdata = [];
+                    let eqTOTData = [], eqAUDdata = [], eqBTCdata = [], eqETHdata = [], eqLTCdata = [],
+                        eqXRPdata = [], eqBCHdata = [], eqETCdata = [], eqOMGdata = [], eqPOWRdata = [];
                     latestEquities.forEach(function(equity){
                         eqLabels.push(new Date(equity.createdAt).getTime());
                         eqTOTData.push(equity.TOTval.toFixed(2));
@@ -48,6 +49,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                         eqXRPdata.push(equity.XRPval.toFixed(2));
                         eqBCHdata.push(equity.BCHval.toFixed(2));
                         eqETCdata.push(equity.ETCval.toFixed(2));
+                        eqOMGdata.push(equity.OMGval.toFixed(2));
+                        eqPOWRdata.push(equity.POWRval.toFixed(2));
                     });
                     eqLabels.reverse();
                     eqTOTData.reverse();
@@ -58,6 +61,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                     eqXRPdata.reverse();
                     eqBCHdata.reverse();
                     eqETCdata.reverse();
+                    eqOMGdata.reverse();
+                    eqPOWRdata.reverse();
                     
                     res.render("portfolio", {
                         calcs: allCalcs,
@@ -70,6 +75,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                         XRPdata: eqXRPdata,
                         BCHdata: eqBCHdata,
                         ETCdata: eqETCdata,
+                        OMGdata: eqOMGdata,
+                        POWRdata: eqPOWRdata,
                     });
                 }
             });
@@ -142,6 +149,8 @@ router.post("/register", function(req, res){
                 BCHbal: 0, BCHval: 0,
                 XRPbal: 0, XRPval: 0,
                 ETCbal: 0, ETCval: 0,
+                OMGbal: 0, OMGval: 0,
+                POWRbal: 0, POWRval: 0,
                 TOTval: 0,
                 owner: {
                     username: req.body.username,
