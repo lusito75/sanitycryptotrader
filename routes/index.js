@@ -31,7 +31,7 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
         if (err) {
             console.log(err.message);
         } else {
-            Equity.find({'owner.username': activeUsername}).sort({'createdAt': -1}).limit(1000).find( function (err, latestEquities) {
+            Equity.find({'owner.username': activeUsername}).sort({'createdAt': -1}).limit(10000).find( function (err, latestEquities) {
                 if (err) {
                     console.log(err.message);
                 } else {

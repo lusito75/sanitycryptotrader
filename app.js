@@ -1,4 +1,4 @@
-var secrets        = require('./secrets.json'),
+const secrets        = require('./secrets.json'),
     BTCMarkets     = require('btc-markets'),
     mongoose       = require('mongoose'),
     methodOverride = require('method-override'),
@@ -12,9 +12,9 @@ var secrets        = require('./secrets.json'),
     helperCalc     = require('./helpers/calculations');
 
 // web server stuff
-var express       = require('express'),
-    app           = express(),
-    bodyParser    = require('body-parser');
+const express       = require('express'),
+      app           = express(),
+      bodyParser    = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -57,7 +57,7 @@ var mongologin = "";
 if (secrets.mongousr && secrets.mongopwd) {
     mongologin = secrets.mongousr + ':' + secrets.mongopwd + '@';
 }
-var mongoUrl = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
+const mongoUrl = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
 console.log('connecting to mongodb: '+mongoUrl);
 var mongoOptions = {
     useMongoClient: true,
