@@ -38,7 +38,7 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                     //format data for chartjs
                     var eqLabels = [];
                     let eqTOTData = [], eqAUDdata = [], eqBTCdata = [], eqETHdata = [], eqLTCdata = [],
-                        eqXRPdata = [], eqBCHdata = [], eqETCdata = [], eqOMGdata = [], eqPOWRdata = [];
+                        eqXRPdata = [], eqBCHABCdata = [], eqBCHSVdata = [], eqETCdata = [], eqOMGdata = [], eqPOWRdata = [];
                     latestEquities.forEach(function(equity){
                         eqLabels.push(new Date(equity.createdAt).getTime());
                         eqTOTData.push(equity.TOTval.toFixed(2));
@@ -47,7 +47,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                         eqETHdata.push(equity.ETHval.toFixed(2));
                         eqLTCdata.push(equity.LTCval.toFixed(2));
                         eqXRPdata.push(equity.XRPval.toFixed(2));
-                        eqBCHdata.push(equity.BCHval.toFixed(2));
+                        eqBCHABCdata.push(equity.BCHABCval.toFixed(2));
+                        eqBCHSVdata.push(equity.BCHSVval.toFixed(2));
                         eqETCdata.push(equity.ETCval.toFixed(2));
                         eqOMGdata.push(equity.OMGval.toFixed(2));
                         eqPOWRdata.push(equity.POWRval.toFixed(2));
@@ -59,7 +60,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                     eqETHdata.reverse();
                     eqLTCdata.reverse();
                     eqXRPdata.reverse();
-                    eqBCHdata.reverse();
+                    eqBCHABCdata.reverse();
+                    eqBCHSVdata.reverse();
                     eqETCdata.reverse();
                     eqOMGdata.reverse();
                     eqPOWRdata.reverse();
@@ -73,7 +75,8 @@ router.get("/portfolio", middleware.isLoggedIn, function(req, res){
                         ETHdata: eqETHdata,
                         LTCdata: eqLTCdata,
                         XRPdata: eqXRPdata,
-                        BCHdata: eqBCHdata,
+                        BCHABCdata: eqBCHABCdata,
+                        BCHSVdata: eqBCHSVdata,
                         ETCdata: eqETCdata,
                         OMGdata: eqOMGdata,
                         POWRdata: eqPOWRdata,
@@ -146,7 +149,8 @@ router.post("/register", function(req, res){
                 BTCbal: 0, BTCval: 0,
                 ETHbal: 0, ETHval: 0,
                 LTCbal: 0, LTCval: 0,
-                BCHbal: 0, BCHval: 0,
+                BCHABCbal: 0, BCHABCval: 0,
+                BCHSVbal: 0, BCHSVval: 0,
                 XRPbal: 0, XRPval: 0,
                 ETCbal: 0, ETCval: 0,
                 OMGbal: 0, OMGval: 0,

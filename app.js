@@ -69,12 +69,13 @@ mongoose.connect(mongoUrl, mongoOptions);
 // var  to store balances temporarily
 var equityData = {
     AUD: 0,
-    BTCbal: 0, BTCval: 0,
-    ETHbal: 0, ETHval: 0,
-    LTCbal: 0, LTCval: 0,
-    BCHbal: 0, BCHval: 0,
-    XRPbal: 0, XRPval: 0,
-    ETCbal: 0, ETCval: 0,
+    BTCbal: 0,    BTCval: 0,
+    ETHbal: 0,    ETHval: 0,
+    LTCbal: 0,    LTCval: 0,
+    BCHABCbal: 0, BCHABCval: 0,
+    BCHSVbal: 0,  BCHSVval: 0,
+    XRPbal: 0,    XRPval: 0,
+    ETCbal: 0,    ETCval: 0,
     OMGbal: 0, OMGval: 0,
     POWRbal: 0, POWRval: 0,
     TOTval: 0,
@@ -125,8 +126,11 @@ function capturePriceData(crypto) {
                     case "LTC":
                         equityData.LTCval = (equityData.LTCbal * data.lastPrice) / numberConverter;                            
                         break;
-                    case "BCH":
-                        equityData.BCHval = (equityData.BCHbal * data.lastPrice) / numberConverter;                            
+                    case "BCHABC":
+                        equityData.BCHABCval = (equityData.BCHABCbal * data.lastPrice) / numberConverter;                            
+                        break;
+                    case "BCHSV":
+                        equityData.BCHSVval = (equityData.BCHSVbal * data.lastPrice) / numberConverter;                            
                         break;
                     case "XRP":
                         equityData.XRPval = (equityData.XRPbal * data.lastPrice) / numberConverter;                            
@@ -142,7 +146,7 @@ function capturePriceData(crypto) {
                         break;
                 }
                 equityData.TOTval = equityData.AUD + equityData.BTCval + equityData.ETHval
-                                     + equityData.LTCval + equityData.BCHval + equityData.XRPval
+                                     + equityData.LTCval + equityData.BCHABCval + equityData.BCHSVval + equityData.XRPval
                                      + equityData.ETCval + equityData.OMGval + equityData.POWRval;
                 if ( (activeUsername === "SanitySoftware") || (activeUsername === "paulo@lourenco.net.au") || (secrets.mongosvr === "localhost") ) {
                     // only create a new price tick in db if master user or local instance
@@ -215,8 +219,11 @@ function updateEquityData() {
                         case "LTC":
                             equityData.LTCbal = account.balance;                            
                             break;
-                        case "BCH":
-                            equityData.BCHbal = account.balance;                            
+                        case "BCHABC":
+                            equityData.BCHABCbal = account.balance;                            
+                            break;
+                        case "BCHSV":
+                            equityData.BCHSVbal = account.balance;                            
                             break;
                         case "XRP":
                             equityData.XRPbal = account.balance;                            
@@ -248,26 +255,28 @@ function updateEquityData() {
 
 
 
-setInterval(capturePriceData.bind(null, "BTC"), 60000); // 60000 (1 minute / 60s)
-setInterval(capturePriceData.bind(null, "ETH"), 60000);
-setInterval(capturePriceData.bind(null, "LTC"), 60000);
-setInterval(capturePriceData.bind(null, "BCH"), 60000);
-setInterval(capturePriceData.bind(null, "XRP"), 60000);
-setInterval(capturePriceData.bind(null, "ETC"), 60000);
-setInterval(capturePriceData.bind(null, "OMG"), 60000);
-setInterval(capturePriceData.bind(null, "POWR"), 60000);
+setInterval(capturePriceData.bind(null, "BTC"),    60000); // 60000 (1 minute / 60s)
+setInterval(capturePriceData.bind(null, "ETH"),    60000);
+setInterval(capturePriceData.bind(null, "LTC"),    60000);
+setInterval(capturePriceData.bind(null, "BCHABC"), 60000);
+setInterval(capturePriceData.bind(null, "BCHSV"),  60000);
+setInterval(capturePriceData.bind(null, "XRP"),    60000);
+setInterval(capturePriceData.bind(null, "ETC"),    60000);
+setInterval(capturePriceData.bind(null, "OMG"),    60000);
+setInterval(capturePriceData.bind(null, "POWR"),   60000);
 
-setInterval(analysePriceData.bind(null, "BTC"), 90000); //90000 (1.5 minute / 90s)
-setInterval(analysePriceData.bind(null, "ETH"), 90000);
-setInterval(analysePriceData.bind(null, "LTC"), 90000);
-setInterval(analysePriceData.bind(null, "BCH"), 90000);
-setInterval(analysePriceData.bind(null, "XRP"), 90000);
-setInterval(analysePriceData.bind(null, "ETC"), 90000);
-setInterval(analysePriceData.bind(null, "OMG"), 90000);
-setInterval(analysePriceData.bind(null, "POWR"), 90000);
+setInterval(analysePriceData.bind(null, "BTC"),    90000); //90000 (1.5 minute / 90s)
+setInterval(analysePriceData.bind(null, "ETH"),    90000);
+setInterval(analysePriceData.bind(null, "LTC"),    90000);
+setInterval(analysePriceData.bind(null, "BCHABC"), 90000);
+setInterval(analysePriceData.bind(null, "BCHSV"),  90000);
+setInterval(analysePriceData.bind(null, "XRP"),    90000);
+setInterval(analysePriceData.bind(null, "ETC"),    90000);
+setInterval(analysePriceData.bind(null, "OMG"),    90000);
+setInterval(analysePriceData.bind(null, "POWR"),   90000);
 
 //update equity data
-setInterval(updateEquityData.bind(null), 21600000); //21600000 (6 hours)
+setInterval(updateEquityData.bind(null), 216000); //21600000 (6 hours)
 
 setUpBtcClient();
 

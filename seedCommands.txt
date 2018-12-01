@@ -21,6 +21,7 @@ db.calcs.update({}, {$set: {averagedownEnabled:false, recommendedAction: ""}}, {
 db.calcs.update({}, {$set: {pumpAndDumpMarket:false}}, {multi:true})
 db.calcs.update({}, {$set: {shortTermMin:0, shortTermMax:0}}, {multi:true})
 db.equities.update({}, {$set: {OMGbal:0, OMGval:0, POWRbal:0, POWRval:0}}, {multi:true})
+db.equities.update({}, {$set: {BCHABCbal:0, BCHABCval:0, BCHSVbal:0, BCHSVval:0}}, {multi:true})
 
 // remove multiple documents with conditions
 db.equities.deleteMany({ "owner" : { "$exists" : false } })
