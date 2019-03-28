@@ -9,7 +9,7 @@ var calcSchema = new mongoose.Schema({
     shortTermMax: Number,        // recent maximum value since records began
     trend: String,              // "d" (down) "u" (up) "." steady
     lastAction: String,         // "buy" or "sell"
-    recommendedAction: String,  // "averagedown" to prompt a check if we should buy more
+    recommendedAction: String,  // "averagedown" to check if we should buy more, "sellnow" to trigger instant sale
     previousPrice: Number,      // previous sample price
     lastTradedPrice: Number,    // last price achieve in a buy or sell action
     percentGain: Number,        // average percentage gain/loss over recorded data

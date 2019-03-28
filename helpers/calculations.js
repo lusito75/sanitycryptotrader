@@ -180,6 +180,36 @@ function createBuyOrder(client, crypto, price, volume, callback){
 //===============================================================================================================================
 
 // ===============SELL functions=========+++=====================================================================================
+function sellNow(myCalc, latest, profit, client, crypto) {
+    initiateSell(client, crypto, latest, function(res){
+        if (res.success) {
+            console.log(crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
+            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is! TODO
+            myCalc.lastAction = "sell";
+            sendEmail('CryptoTrader: **SELL OK** notification', crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
+            if (profit < 0) {
+                // we have just sold to stop loss, don't wait too long before considering to buy back in
+                myCalc.trend = truncateString(myCalc.trend, 35);
+            } else {
+                // we have just sold for profit, don't rush to buy back in, reset trend and start again
+                myCalc.trend = ".";
+            }
+            if (myCalc.runningProfit === 0) {
+                myCalc.runningProfit = profit;
+            } else {
+                var avg = (myCalc.runningProfit + profit) / 2;
+                myCalc.runningProfit = avg;
+            }
+        } else {
+            console.log(crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
+            sendEmail('CryptoTrader: **SELL NOK** notification', crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
+        }
+        myCalc.previousPrice = latest;
+        myCalc.recommendedAction = "";
+        myCalc.save();
+    });
+}
+
 function initiateSell(client, crypto, price, callback) {
     getBalance(client, crypto, function(balance){
         console.log("my "+ crypto + " balance is: "+balance/numberConverter);
@@ -268,37 +298,13 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
 
             // whats the trend?
             myCalc.trend = buildTrend(myCalc.trend, change);
+            var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
 
             if ( (myCalc.lastAction === "buy") && (myCalc.recommendedAction !== "averagedown") ){
-                var profit = ((latest - myCalc.lastTradedPrice) / myCalc.lastTradedPrice)*100;
+                
                 if (doWeSell(myCalc, latest, profit, change, max)) {
                     //update lastTradedPrice, update lastAction, average out running profit
-                    initiateSell(client, crypto, latest, function(res){
-                        if (res.success) {
-                            console.log(crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
-                            myCalc.lastTradedPrice = latest; //or rather what the actual sale price is! TODO
-                            myCalc.lastAction = "sell";
-                            sendEmail('CryptoTrader: **SELL OK** notification', crypto + " SELL order completed ok for " + profit.toFixed(2) +"% @" + latest);
-                            if (profit < 0) {
-                                // we have just sold to stop loss, don't wait too long before considering to buy back in
-                                myCalc.trend = truncateString(myCalc.trend, 35);
-                            } else {
-                                // we have just sold for profit, don't rush to buy back in, reset trend and start again
-                                myCalc.trend = ".";
-                            }
-                            if (myCalc.runningProfit === 0) {
-                                myCalc.runningProfit = profit;
-                            } else {
-                                var avg = (myCalc.runningProfit + profit) / 2;
-                                myCalc.runningProfit = avg;
-                            }
-                        } else {
-                            console.log(crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
-                            sendEmail('CryptoTrader: **SELL NOK** notification', crypto + " SELL order FAILED for " + profit.toFixed(2) +"% @" + latest);
-                        }
-                        myCalc.previousPrice = latest;
-                        myCalc.save();
-                    });
+                    sellNow(myCalc, latest, profit, client, crypto);
                 } else {
                     if ( (myCalc.averagedownEnabled) && (profit < -(myCalc.targetMargin*2)) ) {
                         console.log(crypto + ' profit is WAY down ('+ profit.toFixed(2) + '%), lets consider some Dollar Cost Averaging');
@@ -335,6 +341,12 @@ helperObj.updateCalc = function (client, crypto, min, max, latest){
                     myCalc.previousPrice = latest;
                     myCalc.save();
                 }
+            }
+            
+            // Emergency SELL Condition
+            if ( myCalc.recommendedAction === "sellnow" ) {
+                console.log(crypto + ' urgent SALE triggered');
+                sellNow(myCalc, latest, profit, client, crypto);
             }
             myCalc.previousPrice = latest;
             myCalc.save();    
