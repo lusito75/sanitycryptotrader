@@ -1,11 +1,10 @@
-const secrets    = require('../secrets.json')
 const nodemailer = require('nodemailer');
 
 const transport = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-        user: secrets.emailuser,
-        pass: secrets.emailpass,
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
     },
 });
 

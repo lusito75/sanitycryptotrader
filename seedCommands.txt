@@ -31,6 +31,6 @@ db.equities.deleteMany({ "owner" : { "$exists" : false } })
 db.ticks.createIndex( { "timestamp": 1 }, { expireAfterSeconds: 7776000 } )    //90 days
 db.equities.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 5184000 } ) //60 days
 
-// remove all docs with timestamp older than Date(1523000000*1000);
-// (   Fri Apr 06 2018 17:33:20 GMT+1000 (AUS Eastern Standard Time)) )
-db.ticks.remove( { timestamp : {"$lt" : 1523000000 } })
+// remove all docs with timestamp older than Date(1540000000*1000);
+// (   Saturday, October 20, 2018 12:46:40 PM GMT+11:00 DST )
+db.ticks.remove( { timestamp : {"$lt" : 1540000000 } })

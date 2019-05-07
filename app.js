@@ -1,15 +1,14 @@
-const secrets        = require('./secrets.json'),
-    BTCMarkets     = require('btc-markets'),
-    mongoose       = require('mongoose'),
-    methodOverride = require('method-override'),
-    LocalStrategy  = require('passport-local'),
-    passport       = require('passport'),
-    flash          = require('connect-flash'),
-    User           = require('./models/user'),
-    Tick           = require('./models/tick'),
-    Calc           = require('./models/calc'),
-    Equity         = require('./models/equity'),
-    helperCalc     = require('./helpers/calculations');
+const BTCMarkets     = require('btc-markets'),
+      mongoose       = require('mongoose'),
+      methodOverride = require('method-override'),
+      LocalStrategy  = require('passport-local'),
+      passport       = require('passport'),
+      flash          = require('connect-flash'),
+      User           = require('./models/user'),
+      Tick           = require('./models/tick'),
+      Calc           = require('./models/calc'),
+      Equity         = require('./models/equity'),
+      helperCalc     = require('./helpers/calculations');
 
 // web server stuff
 const express       = require('express'),
@@ -54,10 +53,8 @@ global.mysecret = "";
 global.mykey ="";
 
 var mongologin = "";
-if (secrets.mongousr && secrets.mongopwd) {
-    mongologin = secrets.mongousr + ':' + secrets.mongopwd + '@';
-}
-const mongoUrl = "mongodb://" + mongologin + secrets.mongosvr + ":" + secrets.mongoprt + "/" + secrets.mongodb;
+mongologin = process.env.MONGO_USR + ':' + process.env.MONGO_PWD + '@';
+const mongoUrl = "mongodb://" + mongologin + process.env.MONGO_URL + ":" + process.env.MONGO_PRT + "/" + process.env.MONGO_DB;
 console.log('connecting to mongodb: '+mongoUrl);
 var mongoOptions = {
     useMongoClient: true,
@@ -99,10 +96,6 @@ function setUpBtcClient() {
     } else if (mysecret && mykey && (btcclient == null)) {
         console.log('user logged off, but this instance will run with previous credentials from last login');
         btcclient = new BTCMarkets(mykey, mysecret);
-    } else if (secrets.api_key && secrets.api_secret && (btcclient == null)) {
-        console.log('master instance - setup BTC client with Sanity Software default params')
-        mastermode = true;
-        btcclient = new BTCMarkets(secrets.api_key, secrets.api_secret);
     }
 }
 
@@ -287,6 +280,6 @@ var dbRoutes    = require('./routes/data');
 app.use(indexRoutes);
 app.use(dbRoutes);
 
-app.listen(5050, function(){
-    console.log("Crypto Trader Server Started");
+app.listen(process.env.PORT, function(){
+    console.log("Crypto Trader Server Started on port: " + process.env.PORT);
 });

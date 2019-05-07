@@ -4,8 +4,8 @@
   "description": "interact with btcmarkets",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "env-cmd ./config/dev.env nodemon app.js"
   },
   "author": "P Lourenco",
   "license": "ISC",
@@ -22,8 +22,12 @@
     "mongoose": "^4.13.7",
     "mongoose-timestamp": "^0.6.0",
     "nodemailer": "^4.4.2",
+    "nodemon": "^1.19.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.5.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^8.0.2"
   }
 }
