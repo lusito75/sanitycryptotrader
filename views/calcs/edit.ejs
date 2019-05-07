@@ -78,9 +78,9 @@
                         </label>
                         <label for="RecAction">Recommended Action</label>
                         <select class="form-control" name="calc[recommendedAction]" value="<%= calc.recommendedAction %>">
-                            <option value="" <%= (calc.recommendedAction === "") ? selected : "" %> >No Action</option>
-                            <option value="averagedown" <%= (calc.recommendedAction === "averagedown") ? selected : "" %> >Buy to Average Down</option>
-                            <option value="sellnow" <%= (calc.recommendedAction === "sellnow") ? selected : "" %> >Sell NOW!</option>
+                            <option value="">No Action</option>
+                            <option value="averagedown">Buy to Average Down</option>
+                            <option value="sellnow">Sell NOW!</option>
                         </select>
                     </div>
                     <div class="checkbox">

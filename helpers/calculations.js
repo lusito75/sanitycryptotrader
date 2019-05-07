@@ -104,7 +104,7 @@ function doWeBuy (inCalc, inLatest, inChange, inMin) {
         weight += 50;
         buy = true;
     }
-    if ( flats/(flats+ups+downs) >= 0.4 ) { //40% no movements
+    if ( (flats/(flats+ups+downs) >= 0.4) && ( inLatest/inMin <= 1.05 ) ) {
         console.log(inCalc.instrument + ' trending flat .. buy ok');
         weight += 50;
         buy = true;
