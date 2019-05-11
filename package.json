@@ -19,7 +19,7 @@
     "express": "^4.16.2",
     "express-session": "^1.15.6",
     "method-override": "^2.3.10",
-    "mongoose": "^4.13.7",
+    "mongoose": "^4.13.18",
     "mongoose-timestamp": "^0.6.0",
     "nodemailer": "^4.4.2",
     "nodemon": "^1.19.0",

@@ -52,16 +52,15 @@ global.btcclient = null;
 global.mysecret = "";
 global.mykey ="";
 
-var mongologin = "";
-mongologin = process.env.MONGO_USR + ':' + process.env.MONGO_PWD + '@';
-const mongoUrl = "mongodb://" + mongologin + process.env.MONGO_URL + ":" + process.env.MONGO_PRT + "/" + process.env.MONGO_DB;
-console.log('connecting to mongodb: '+mongoUrl);
+console.log('connecting to mongodb: '+process.env.MONGO_URL);
 var mongoOptions = {
-    useMongoClient: true,
     reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 500
+    reconnectInterval: 500,
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    // useMongoClient: true
 }
-mongoose.connect(mongoUrl, mongoOptions);
+mongoose.connect(process.env.MONGO_URL, mongoOptions);
 
 // var  to store balances temporarily
 var equityData = {
